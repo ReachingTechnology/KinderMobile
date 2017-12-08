@@ -16,7 +16,7 @@
     <mu-text-field label="完成状态" v-model="task.finish_status_display" disabled>
     </mu-text-field>
     <br/>
-    <mu-select-field v-model="task.approve_status" label="工作审批" hintText="待审批">
+    <mu-select-field v-model="task.approve_status" label="工作审批" hintText="待审批" :disabled="this.task.userid === this.user._id">
       <mu-menu-item value=0   title="个人原因"/>
       <mu-menu-item value=1   title="工作安排"/>
     </mu-select-field>
@@ -53,17 +53,10 @@
       },
       // Baidu location functionalities
       getLocation () {
-        navigator.geolocation.getCurrentPosition(this.translateLoc)
+        console.log('***************try to get location**************')
+        navigator.geolocation.getCurrentPosition(this.translateLoc, this.onGetLocationError, {timeout: 3000, enableHighAccuracy: true})
       },
-      translateLoc (position) {
-        var currentLat = position.coords.latitude
-        var currentLon = position.coords.longitude
-        var gpsPoint = new BMap.Point(currentLon, currentLat)
-        BMap.Convertor.translate(gpsPoint, 0, this.setBaiduPoint)
-      },
-      setBaiduPoint (point) {
-        console.log('***************this is baidu point**************')
-        console.log(point)
+      commitInfo (lat, lng) {
         var finishTime = dateUtil.getNow()
         this.task.startofday = dateUtil.getStartOfTheday(this.selectedDay)
         var taskFinishInfo = {}
@@ -74,17 +67,34 @@
         taskFinishInfo.comment = this.task.comment
         taskFinishInfo.approve_status = this.task.approve_status
         taskFinishInfo.approve_user = this.task.approve_user
-        taskFinishInfo.locationLat = point.lat
-        taskFinishInfo.locationLng = point.lng
+        taskFinishInfo.locationLat = lat
+        taskFinishInfo.locationLng = lng
         console.log(taskFinishInfo)
         this.COMMIT_TASK_EXEC_INFO(taskFinishInfo)
         this.isCommitting = false
         this.$router.go(-1)
       },
+      translateLoc (position) {
+        console.log('***************got position**************')
+        var currentLat = position.coords.latitude
+        var currentLon = position.coords.longitude
+        var gpsPoint = new BMap.Point(currentLon, currentLat)
+        BMap.Convertor.translate(gpsPoint, 0, this.setBaiduPoint)
+      },
+      setBaiduPoint (point) {
+        console.log('***************this is baidu point**************')
+        console.log(point)
+        this.commitInfo(point.lat, point.lng)
+      },
+      onGetLocationError (error) {
+        console.log('get location error:')
+        console.log(error)
+        this.commitInfo(0, 0)
+      },
       ...mapActions([COMMIT_TASK_EXEC_INFO, CHANGE_APP_TITLE])
     },
     computed: {
-      ...mapGetters(['allRole'])
+      ...mapGetters(['allRole', 'user'])
     },
     created: function () {
     },

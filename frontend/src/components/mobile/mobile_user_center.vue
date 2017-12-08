@@ -10,15 +10,20 @@
     <mu-text-field disabled="true" label="岗位" v-model="currentUser.roleName" labelFloat/>
     <br/>
     <div>
-      <mu-raised-button style="display:inline-block" size="normal" label="编辑信息" @click.native="handleEdit" primary/>
-      <mu-raised-button style="display:inline-block; margin-left: 50px" size="normal" label="退出登录" @click.native="handleLogout"/>
+      <!--<mu-raised-button style="display:inline-block" size="normal" label="修改密码" @click.native="handleChgPass" primary/>-->
+      <mu-raised-button style="display:inline-block" size="normal" label="退出登录" @click.native="handleLogout"/>
     </div>
+    <mu-dialog :open="askLogout" title="退出" @close="closeLogoutDialog">
+      确认退出系统？
+      <mu-flat-button slot="actions" @click="closeLogoutDialog" primary label="取消"/>
+      <mu-flat-button slot="actions" primary @click="logout" label="确定"/>
+    </mu-dialog>
   </div>
 </template>
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import { USER_LOGIN } from '../../store/mutation_types'
+  import { USER_LOGOUT, CHANGE_APP_TITLE } from '../../store/mutation_types'
   import ObjUtil from '../../utils/ObjUtil'
   import Util from '../../store/utils'
 
@@ -37,10 +42,27 @@
     },
     data: () => {
       return {
+        askLogout: false
       }
     },
+    beforeRouteEnter: function (to, from, next) {
+      next(vm => { vm.CHANGE_APP_TITLE('个人中心') })
+    },
     methods: {
-      ...mapActions([USER_LOGIN])
+      handleLogout () {
+        this.askLogout = true
+      },
+      closeLogoutDialog () {
+        this.askLogout = false
+      },
+      logout () {
+        this.askLogout = false
+        this.USER_LOGOUT()
+      },
+      handleChgPass () {
+
+      },
+      ...mapActions([CHANGE_APP_TITLE, USER_LOGOUT])
     }
   }
 </script>

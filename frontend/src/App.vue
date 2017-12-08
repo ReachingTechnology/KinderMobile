@@ -7,15 +7,17 @@
     </div>
     <div class="content">
       <div class="body">
+        <mobile-user-login v-show="user._id == ''"></mobile-user-login>
         <!--<mobile-user-day-task v-show="user.id != '' && selectedTab == 'today_task'"></mobile-user-day-task>-->
-        <router-view></router-view>
+        <router-view v-show="user._id != ''"></router-view>
       </div>
     </div>
     <div class="footer">
-      <mu-paper class="bottomFixed">
+      <mu-paper v-show="user._id != ''" class="bottomFixed">
         <mu-bottom-nav :value="selectedTab" @change="handleTabChange">
           <mu-bottom-nav-item value="today_task" title="今日任务" icon="assignment"/>
           <mu-bottom-nav-item value="task_info" title="任务统计" icon="assessment"/>
+          <mu-bottom-nav-item value="notification" title="消息通知" icon="email"></mu-bottom-nav-item>
           <mu-bottom-nav-item value="user_center" title="用户中心" icon="account_box"/>
         </mu-bottom-nav>
       </mu-paper>
@@ -34,6 +36,7 @@
   import { GET_ALL_USER_ACCOUNT, GET_ALL_ROLE, GET_ALL_DUTY, GET_ALL_PERMISSION, GET_ALL_PERMISSION_ROLE, GET_ALL_USER_TASK_EXEC_DATA, USER_LOGOUT } from './store/mutation_types'
   import MobileUserLogin from './components/mobile/mobile_user_login.vue'
   import MobileUserDayTask from './components/mobile/mobile_user_day_task.vue'
+
   export default {
     name: 'app',
     components: {
@@ -43,9 +46,9 @@
       ...mapGetters(['datePickerOptionsDay', 'datePickerOptionsMonth', 'user', 'appTitle'])
     },
     created: function () {
-      this.user._id = '000001'
-      this.user.role = ['ROLE_0001', 'ROLE_0004']
-      this.user.name = 'zhanghao'
+//      this.user._id = '000001'
+//      this.user.role = ['ROLE_0001', 'ROLE_0004']
+//      this.user.name = 'zhanghao'
       this.GET_ALL_PERMISSION_ROLE()
       this.GET_ALL_PERMISSION()
       this.GET_ALL_USER_ACCOUNT()
@@ -65,6 +68,8 @@
           this.$router.push({ name: 'userDayTask' })
         } else if (id === 'task_info') {
           this.$router.push({ name: 'allUserTasksStat' })
+        } else if (id === 'notification') {
+          this.$router.push({ name: 'userMessage' })
         } else if (id === 'user_center') {
           this.$router.push({name: 'userCenter'})
         }
@@ -79,7 +84,7 @@
   }
 
   .header{
-    background-color: #7e57c2;
+    background-color: #2196f3;
   }
 
   .logo{

@@ -10,6 +10,7 @@ export const GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE = 'GET_ALL_USER_TASK_EXEC_
 // user login/logout
 export const USER_LOGIN = 'USER_LOGIN'
 export const USER_LOGOUT = 'USER_LOGOUT'
+export const USER_CHANGE_PASS = 'USER_CHANGE_PASS'
 
 // user account
 export const UPSERT_USER_ACCOUNT = 'UPSERT_USER_ACCOUNT'
@@ -50,3 +51,10 @@ export const GET_ONE_TASK_EXEC_DATA_BY_DATERANGE = 'GET_ONE_TASK_EXEC_DATA_BY_DA
 // user location
 export const GET_ALL_USER_LOCATION = 'GET_ALL_USER_LOCATION'
 export const UPSERT_USER_LOCATION = 'UPSERT_USER_LOCATION'
+
+// inform
+// duty
+export const GET_ALL_INFORM = 'GET_ALL_INFORM'
+export const GET_INFORM_BY_USER = 'GET_INFORM_BY_USER'
+export const UPSERT_INFORM = 'UPSERT_INFORM'
+export const REMOVE_INFORMS = 'REMOVE_INFORMS'

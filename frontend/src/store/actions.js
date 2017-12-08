@@ -2,22 +2,30 @@
  * Created by HOZ on 28/08/2017.
  */
 import axios from 'axios'
-import { CHANGE_APP_TITLE, SET_ACTIVE_MENU, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, USER_LOGIN, USER_LOGOUT,
+import { CHANGE_APP_TITLE, SET_ACTIVE_MENU, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, USER_LOGIN, USER_LOGOUT, USER_CHANGE_PASS,
   GET_DUTY_BY_USER, UPSERT_USER_ACCOUNT, GET_ALL_USER_ACCOUNT, REMOVE_USERS,
   GET_ALL_USER_GROUP, UPSERT_USER_GROUP, REMOVE_USER_GROUPS,
   GET_ALL_ROLE, UPSERT_ROLE, REMOVE_ROLES,
   GET_ALL_PERMISSION_ROLE, UPSERT_PERMISSION_ROLE, GET_ALL_PERMISSION, REMOVE_PERMISSION_ROLES,
   COMMIT_TASK_EXEC_INFO, GET_TASK_EXEC_DATA_BY_DATE, GET_USER_TASK_EXEC_DATA_BY_DATERANGE, GET_ONE_TASK_EXEC_DATA_BY_DATERANGE,
   GET_ALL_DUTY, UPSERT_DUTY, REMOVE_DUTIES, GET_ALL_DUTY_CATEGORY, UPSERT_DUTY_CATEGORY, REMOVE_DUTY_CATEGORIES,
-  GET_ALL_USER_LOCATION, UPSERT_USER_LOCATION } from './mutation_types'
+  GET_ALL_USER_LOCATION, UPSERT_USER_LOCATION,
+  GET_ALL_INFORM, GET_INFORM_BY_USER, UPSERT_INFORM, REMOVE_INFORMS } from './mutation_types'
 // import dateUtil from '../utils/DateUtil'
 import state from './state'
+import dateUtil from '../utils/DateUtil'
 
 axios.defaults.baseURL = state.backend_uri
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest'
 // axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+function handleError (error) {
+  if (error.response.status === 401) {
+    state.user._id = ''
+  }
+}
 
 const actions = {
   /*
@@ -30,15 +38,25 @@ const actions = {
         console.log(response.data)
         store.commit('SET_USER', response.data)
       })
-      .catch(function (error) {
-        console.log(error)
-      })
+      .catch(handleError)
   },
   [ USER_LOGOUT ]: function (store, param) {
     var data = {}
     data._id = ''
     data.name = ''
     store.commit('SET_USER', data)
+  },
+  [ USER_CHANGE_PASS ]: function (store, param) {
+    store.state.changePassFail = true
+    axios.post('/user/change_pass', param)
+      .then(function (response) {
+        if (response.data.status !== 0) {
+          store.state.changePassFail = true
+        } else {
+          store.state.changePassFail = false
+        }
+      })
+      .catch(handleError)
   },
   /*
    App Title
@@ -65,13 +83,9 @@ const actions = {
           .then(function (response) {
             store.commit('SET_ALL_USER_ACCOUNT', response.data)
           })
-          .catch(function (error) {
-            console.log(error)
-          })
+          .catch(handleError)
       })
-      .catch(function (error) {
-        console.log(error)
-      })
+      .catch(handleError)
   },
   [ GET_ALL_USER_ACCOUNT ]: function (store, param) {
     'use strict'
@@ -81,9 +95,7 @@ const actions = {
         console.log(response.data)
         store.commit('SET_ALL_USER_ACCOUNT', response.data)
       })
-      .catch(function (error) {
-        console.log(error)
-      })
+      .catch(handleError)
   },
   [ REMOVE_USERS ]: function (store, param) {
     axios.post('/management/remove_user', param)
@@ -94,9 +106,7 @@ const actions = {
           .then(function (response) {
             store.commit('SET_ALL_USER_ACCOUNT', response.data)
           })
-          .catch(function (error) {
-            console.log(error)
-          })
+          .catch(handleError)
       })
   },
   /*
@@ -108,9 +118,7 @@ const actions = {
       .then(function (response) {
         store.commit('SET_ALL_USER_GROUP', response.data)
       })
-      .catch(function (error) {
-        console.log(error)
-      })
+      .catch(handleError)
   },
   [ UPSERT_USER_GROUP ]: function (store, param) {
     'use strict'
@@ -118,15 +126,14 @@ const actions = {
       .then(function (response) {
         store.dispatch(GET_ALL_USER_GROUP)
       })
-      .catch(function (error) {
-        console.log(error)
-      })
+      .catch(handleError)
   },
   [ REMOVE_USER_GROUPS ]: function (store, param) {
     axios.post('/management/remove_user_group', param)
       .then(function (response) {
         store.dispatch(GET_ALL_USER_GROUP)
       })
+      .catch(handleError)
   },
   /*
    Role
@@ -139,9 +146,7 @@ const actions = {
         console.log('get all roles')
         store.commit('SET_ALL_ROLE', response.data)
       })
-      .catch(function (error) {
-        console.log(error)
-      })
+      .catch(handleError)
   },
   [ UPSERT_ROLE ]: function (store, param) {
     'use strict'
@@ -153,13 +158,9 @@ const actions = {
             console.log('get all roles')
             store.commit('SET_ALL_ROLE', response.data)
           })
-          .catch(function (error) {
-            console.log(error)
-          })
+          .catch(handleError)
       })
-      .catch(function (error) {
-        console.log(error)
-      })
+      .catch(handleError)
   },
   [ REMOVE_ROLES ]: function (store, param) {
     axios.post('/management/remove_role', param)
@@ -170,9 +171,7 @@ const actions = {
           .then(function (response) {
             store.commit('SET_ALL_ROLE', response.data)
           })
-          .catch(function (error) {
-            console.log(error)
-          })
+          .catch(handleError)
       })
   },
   /*
@@ -252,27 +251,22 @@ const actions = {
         axios.get('/management/query_all_duty')
           .then(function (response) {
             console.log('get all duty')
+            console.log(response.data)
             store.commit('SET_ALL_DUTY', response.data)
           })
-          .catch(function (error) {
-            console.log(error)
-          })
+          .catch(handleError)
       })
-      .catch(function (error) {
-        console.log(error)
-      })
+      .catch(handleError)
   },
   [ GET_DUTY_BY_USER ]: function (store, param) {
     'use strict'
-    axios.post('/duty/query_duty_by_user', {'userid': store.state.user['id']})
+    axios.post('/duty/query_duty_by_user', {'userid': store.state.user['_id']})
       .then(function (response) {
         console.log('get data by user:')
         console.log(response.data)
         store.commit('SET_USER_DUTY_DATA', response.data)
       })
-      .catch(function (error) {
-        console.log(error)
-      })
+      .catch(handleError)
   },
   [ UPSERT_DUTY ]: function (store, param) {
     'use strict'
@@ -284,13 +278,10 @@ const actions = {
             console.log('get all duties')
             store.commit('SET_ALL_DUTY', response.data)
           })
-          .catch(function (error) {
-            console.log(error)
-          })
+          .catch(handleError)
+        store.dispatch(GET_ALL_USER_ACCOUNT)
       })
-      .catch(function (error) {
-        console.log(error)
-      })
+      .catch(handleError)
   },
   [ REMOVE_DUTIES ]: function (store, param) {
     axios.post('/management/remove_duty', param)
@@ -301,9 +292,7 @@ const actions = {
           .then(function (response) {
             store.commit('SET_ALL_DUTY', response.data)
           })
-          .catch(function (error) {
-            console.log(error)
-          })
+          .catch(handleError)
       })
   },
   /*
@@ -431,6 +420,8 @@ const actions = {
   },
   [ UPSERT_USER_LOCATION ]: function (store, param) {
     'use strict'
+    console.log('upsert user location:')
+    console.log(param)
     axios.post('/management/upsert_user_location', param)
       .then(function (response) {
         store.dispatch(GET_ALL_USER_LOCATION)
@@ -438,7 +429,44 @@ const actions = {
       .catch(function (error) {
         console.log(error)
       })
+  },
+  /*
+   Inform
+   */
+  [ GET_ALL_INFORM ]: function (store, param) {
+    'use strict'
+    axios.get('/inform/query_all_inform ')
+      .then(function (response) {
+        store.commit('SET_ALL_INFORM', response.data)
+      })
+      .catch(handleError)
+  },
+  [ GET_INFORM_BY_USER ]: function (store, param) {
+    'use strict'
+    console.log('query inform by user:::::::')
+    axios.post('/inform/query_inform_by_user', {'userid': store.state.user['_id'], 'queryTime': dateUtil.getNow(), 'startofday': dateUtil.getStartOfToday()})
+      .then(function (response) {
+        console.log('get inform by user:')
+        console.log(response.data)
+        store.commit('SET_USER_INFORM_DATA', response.data)
+      })
+      .catch(handleError)
+  },
+  [ UPSERT_INFORM ]: function (store, param) {
+    'use strict'
+    axios.post('/inform/upsert_inform', param)
+      .then(function (response) {
+        store.dispatch(GET_ALL_INFORM)
+      })
+      .catch(handleError)
+  },
+  [ REMOVE_INFORMS ]: function (store, param) {
+    axios.post('/inform/remove_inform', param)
+      .then(function (response) {
+        store.dispatch(GET_ALL_INFORM)
+      })
   }
 }
+
 export default actions
 

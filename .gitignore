@@ -1,0 +1,14 @@
+.DS_Store
+/static
+index.html
+*.pyc
+/www
+/res
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+access.log*

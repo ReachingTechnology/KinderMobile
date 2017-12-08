@@ -9,6 +9,7 @@ import MobileAllUserTasksStat from '../components/mobile/mobile_all_user_tasks_s
 import MobileOneUserAllTaskStat from '../components/mobile/mobile_one_user_all_task_stat.vue'
 import MobileOneUserOneTaskStat from '../components/mobile/mobile_one_user_one_task_stat.vue'
 import MobileUserCenter from '../components/mobile/mobile_user_center.vue'
+import MobileUserMessage from '../components/mobile/mobile_user_message_list.vue'
 
 Vue.use(Router)
 Vue.use(Vuex)
@@ -20,7 +21,7 @@ const router = new Router({
       name: 'userDayTask',
       component: MobileUserDayTask,
       meta: {
-        keepAlive: false
+        keepAlive: true
       }
     },
     {
@@ -36,7 +37,7 @@ const router = new Router({
       name: 'allUserTasksStat',
       component: MobileAllUserTasksStat,
       meta: {
-        keepAlive: false
+        keepAlive: true
       }
     },
     {
@@ -44,7 +45,7 @@ const router = new Router({
       name: 'oneUserAllTaskStat',
       component: MobileOneUserAllTaskStat,
       meta: {
-        keepAlive: false
+        keepAlive: true
       }
     },
     {
@@ -52,13 +53,21 @@ const router = new Router({
       name: 'oneUserOneTaskStat',
       component: MobileOneUserOneTaskStat,
       meta: {
-        keepAlive: false
+        keepAlive: true
       }
     },
     {
       path: '/userCenter',
       name: 'userCenter',
       component: MobileUserCenter,
+      meta: {
+        keepAlive: false
+      }
+    },
+    {
+      path: '/userMessage',
+      name: 'userMessage',
+      component: MobileUserMessage,
       meta: {
         keepAlive: false
       }

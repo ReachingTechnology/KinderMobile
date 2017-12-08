@@ -20,10 +20,12 @@ const state = {
   allDuty: [],
   allDutyCategory: [],
   dutyForRoles: {},
+  allInform: [],
+  userInform: [],
   // 后端服务器地址
   // backend_uri: 'https://192.168.31.69:7070',
-  // backend_uri: 'https://47.94.192.237:7070',
-  backend_uri: 'https://127.0.0.1:7070',
+  backend_uri: 'https://47.94.192.237:7070',
+  // backend_uri: 'https://127.0.0.1:7070',
   all_statistic_data: [], // 所有用户的所有任务在一个时间段内执行的情况
   userDayTask: [], // 用户的所有任务在某一天执行的情况
   userDaterangeTask: [], // 用户的所有任务在一个时间段里执行的情况
@@ -84,6 +86,7 @@ const state = {
     //   console.log('return false')
     //   return false
     // }
-  }
+  },
+  changePassFail: false
 }
 export default state

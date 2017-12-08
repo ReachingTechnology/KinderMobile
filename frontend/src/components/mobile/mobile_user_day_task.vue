@@ -83,8 +83,6 @@
         this.GET_TASK_EXEC_DATA_BY_DATE(param)
       },
       setIcon (item) {
-        console.log('*********^^^^^^^^^^^^^**********')
-        console.log(item)
         if (item.finish_status === TASK_STATUS_FINISHED) {
           item.icon = 'check_circle'
           item.iconBgColor = 'green'
@@ -122,6 +120,14 @@
           }
         }
         return data
+      },
+      selectedUser () {
+        return this.user._id
+      }
+    },
+    watch: {
+      selectedUser: function (val, oldval) {
+        this.getTaskExecData(dateUtil.getStartOfTheday(this.selectedDay))
       }
     },
     mounted: function () {
@@ -130,7 +136,6 @@
     data: () => {
       return {
         selectedDay: new Date(),
-        selectedUser: '000002',
         selectedTask: {}
       }
     },

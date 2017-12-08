@@ -9,11 +9,21 @@
   <meta charset="UTF-8">
   <title>幼儿园安保系统</title>
   <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=YS2Sf5srZfCl9sItzAnu6lNABhYB4rUU"></script>
-  <script type="text/javascript" src="static/baidu_convertor.js"></script>
+  <script type="text/javascript" src="baiduConvertor.js"></script>
+  <style>
+    .blink {
+      animation:fade 3000ms infinite;
+      -webkit-animation:fade 3000ms infinite;
+    }
+  </style>
 </head>
 <body>
 <script type="text/javascript" src="cordova.js"></script>
-<link rel="stylesheet" href="static/fonts/material-icons/material-icons.css">
+<link rel="stylesheet" href="fonts/materialIcons/materialIcons.css">
+<!--<div id="deviceready" class="blink">-->
+  <!--<p class="event listening">Connecting to Device</p>-->
+  <!--<p class="event received">Device is Ready</p>-->
+<!--</div>-->
 <div id="app"></div>
 </body>
 </html>
