@@ -48,39 +48,49 @@
       },
       ...mapActions([GET_USER_TASK_EXEC_DATA_BY_DATERANGE, CHANGE_APP_TITLE]),
       itemClicked (item) {
-        this.selectedTask = item.value
-        this.selectedTask.startofday = this.selectedData.startofday
-        this.selectedTask.endofday = this.selectedData.endofday
-        this.$router.push({name: 'oneUserOneTaskStat', params: {selectedData: this.selectedTask}})
+        this.$router.push({name: 'oneUserOneTaskStat', params: {userid: item.value.userid, taskid: item.value.taskid, startofday: this.startofday, endofday: this.endofday}})
+      },
+      getData () {
+        let params = {}
+        params.userid = this.userid
+        if (typeof this.startofday === 'string') {
+          params.startofday = parseInt(this.startofday)
+        } else {
+          params.startofday = this.startofday
+        }
+        if (typeof this.endofday === 'string') {
+          params.endofday = parseInt(this.endofday)
+        } else {
+          params.endofday = this.endofday
+        }
+        this.GET_USER_TASK_EXEC_DATA_BY_DATERANGE(params)
       }
     },
     computed: {
       ...mapGetters(['userDaterangeTask', 'user', 'datePickerOptionsDay', 'appTitle']),
       time_range () {
-        return Moment(this.selectedData.startofday * 1000).format('M月D日') + '到' + Moment(this.selectedData.endofday * 1000).format('M月D日')
+        return Moment(this.startofday * 1000).format('M月D日') + '到' + Moment(this.endofday * 1000).format('M月D日')
       },
       queryUser () {
-        return Util.getUserName(this.selectedData.userid)
+        return Util.getUserName(this.userid)
       }
-    },
-    created: function () {
-      let params = {}
-      params.userid = this.selectedData.userid
-      params.startofday = this.selectedData.startofday
-      params.endofday = this.selectedData.endofday
-      this.GET_USER_TASK_EXEC_DATA_BY_DATERANGE(params)
     },
     beforeRouteLeave: function (to, from, next) {
       this.$destroy()
       next()
     },
     beforeRouteEnter: function (to, from, next) {
-      next(vm => { vm.CHANGE_APP_TITLE('用户任务统计') })
+      next(vm => {
+        vm.CHANGE_APP_TITLE('用户任务统计')
+        vm.getData()
+      })
     },
     props: [],
     data: function () {
       return {
-        selectedData: this.$route.params.selectedData,
+        userid: this.$route.params.userid,
+        startofday: this.$route.params.startofday,
+        endofday: this.$route.params.endofday,
         selectedTask: {},
         showEdit: false
       }

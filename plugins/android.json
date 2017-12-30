@@ -15,6 +15,15 @@
         },
         "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "io.cordova.hellocordova"
+        },
+        "cordova-plugin-app-preferences": {
+            "PACKAGE_NAME": "kinder.reachingtech.com"
+        },
+        "com.cordova.plugins.cookiemaster": {
+            "PACKAGE_NAME": "kinder.reachingtech.com"
+        },
+        "cordova-plugin-local-notification": {
+            "PACKAGE_NAME": "kinder.reachingtech.com"
         }
     },
     "dependent_plugins": {
@@ -23,6 +32,9 @@
         },
         "cordova-plugin-compat": {
             "PACKAGE_NAME": "io.cordova.hellocordova"
+        },
+        "cordova-plugin-app-event": {
+            "PACKAGE_NAME": "kinder.reachingtech.com"
         }
     }
 }

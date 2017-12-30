@@ -20,7 +20,7 @@
 </template>
 <script>
   import {mapActions, mapGetters} from 'vuex'
-  import {USER_CHANGE_PASS} from '../store/mutation_types'
+  import {USER_CHANGE_PASS, CHANGE_APP_TITLE} from '../store/mutation_types'
 
   export default {
     components: {},
@@ -34,10 +34,13 @@
           }
         })
       },
-      ...mapActions([USER_CHANGE_PASS])
+      ...mapActions([USER_CHANGE_PASS, CHANGE_APP_TITLE])
     },
     computed: {
       ...mapGetters(['user', 'changePassFail'])
+    },
+    beforeRouteEnter: function (to, from, next) {
+      next(vm => { vm.CHANGE_APP_TITLE('更改密码') })
     },
     watch: {
       changePassFail: function (val, oldVal) {

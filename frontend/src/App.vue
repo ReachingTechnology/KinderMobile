@@ -1,41 +1,65 @@
 <template>
   <div id="app" style="height: 100%" class="layout">
+    <v-app id="vuetify">
     <div class="header">
-      <div class="logo">
-        {{appTitle}}
-      </div>
+      <mu-appbar :title="appTitle">
+        <mu-icon-button icon="chevron_left" slot="left" @click="onBackButtonClick" v-show="!isRootView && user._id != ''"/>
+      </mu-appbar>
     </div>
     <div class="content">
       <div class="body">
         <mobile-user-login v-show="user._id == ''"></mobile-user-login>
         <!--<mobile-user-day-task v-show="user.id != '' && selectedTab == 'today_task'"></mobile-user-day-task>-->
-        <router-view v-show="user._id != ''"></router-view>
+        <transition name="slide">
+          <router-view v-show="user._id != ''"></router-view>
+        </transition>
+        <div style="height: 100px"/>
       </div>
     </div>
     <div class="footer">
-      <mu-paper v-show="user._id != ''" class="bottomFixed">
+      <mu-paper v-show="user._id != '' && isRootView" class="bottomFixed">
         <mu-bottom-nav :value="selectedTab" @change="handleTabChange">
           <mu-bottom-nav-item value="today_task" title="今日任务" icon="assignment"/>
           <mu-bottom-nav-item value="task_info" title="任务统计" icon="assessment"/>
-          <mu-bottom-nav-item value="notification" title="消息通知" icon="email"></mu-bottom-nav-item>
+          <mu-bottom-nav-item value="notification" title="消息通知" icon="email">
+            <!--<mu-badge :content="totalNewNotification" class="demo-icon-badge" circle secondary v-show="totalNewNotification > 0">-->
+              <!--<mu-icon value="email"/>-->
+            <!--</mu-badge>-->
+            <!--<mu-icon value="email" v-show="totalNewNotification <= 0"/>-->
+          </mu-bottom-nav-item>
           <mu-bottom-nav-item value="user_center" title="用户中心" icon="account_box"/>
         </mu-bottom-nav>
       </mu-paper>
+      <!--<v-bottom-nav v-show="user._id != '' && isRootView" class="bottomFixed" absolute :value="true" color="transparent">-->
+        <!--<v-btn flat color="teal" value="recent">-->
+          <!--<span>Recent</span>-->
+          <!--<v-icon>history</v-icon>-->
+        <!--</v-btn>-->
+        <!--<v-btn flat color="teal" value="favorites">-->
+          <!--<span>Favorites</span>-->
+          <!--<v-icon>favorite</v-icon>-->
+        <!--</v-btn>-->
+        <!--<v-btn flat color="teal" value="nearby">-->
+          <!--<span>Nearby</span>-->
+          <!--<v-icon>place</v-icon>-->
+        <!--</v-btn>-->
+      <!--</v-bottom-nav>-->
       <!--<mu-tabs :value="activeTab" shift @change="handleTabChange">-->
       <!--<mu-tab value="today_task" icon="" title="今日任务"/>-->
       <!--<mu-tab value="task_info" icon="" title="任务统计"/>-->
       <!--<mu-tab value="user_center" icon="" title="用户中心"/>-->
       <!--</mu-tabs>-->
     </div>
-
+    </v-app>
   </div>
 </template>
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import { GET_ALL_USER_ACCOUNT, GET_ALL_ROLE, GET_ALL_DUTY, GET_ALL_PERMISSION, GET_ALL_PERMISSION_ROLE, GET_ALL_USER_TASK_EXEC_DATA, USER_LOGOUT } from './store/mutation_types'
+  import { GET_ALL_USER_ACCOUNT, GET_ALL_ROLE, GET_ALL_DUTY, GET_ALL_PERMISSION, GET_ALL_PERMISSION_ROLE, GET_ALL_USER_TASK_EXEC_DATA, USER_LOGOUT, GET_NEW_INFORM_COUNT, GET_NEW_DUTY_NOTIFICATION_COUNT } from './store/mutation_types'
   import MobileUserLogin from './components/mobile/mobile_user_login.vue'
   import MobileUserDayTask from './components/mobile/mobile_user_day_task.vue'
+  import notificationUtil from './utils/NotificationUtil'
 
   export default {
     name: 'app',
@@ -43,25 +67,48 @@
       MobileUserLogin, MobileUserDayTask
     },
     computed: {
-      ...mapGetters(['datePickerOptionsDay', 'datePickerOptionsMonth', 'user', 'appTitle'])
+      ...mapGetters(['datePickerOptionsDay', 'datePickerOptionsMonth', 'user', 'appTitle', 'totalNewNotification', 'isRootView'])
     },
     created: function () {
 //      this.user._id = '000001'
 //      this.user.role = ['ROLE_0001', 'ROLE_0004']
 //      this.user.name = 'zhanghao'
-      this.GET_ALL_PERMISSION_ROLE()
-      this.GET_ALL_PERMISSION()
-      this.GET_ALL_USER_ACCOUNT()
-      this.GET_ALL_ROLE()
-      this.GET_ALL_DUTY()
     },
     data: () => {
       return {
-        selectedTab: 'today_task'
+        selectedTab: ''
+      }
+    },
+    watch: {
+      user: function () {
+        if (this.user._id !== '') {
+          this.GET_ALL_PERMISSION_ROLE()
+          this.GET_ALL_PERMISSION()
+          this.GET_ALL_USER_ACCOUNT()
+          this.GET_ALL_ROLE()
+          this.GET_ALL_DUTY()
+          this.GET_NEW_INFORM_COUNT()
+          this.GET_NEW_DUTY_NOTIFICATION_COUNT()
+          this.handleTabChange('today_task')
+        }
+      },
+      totalNewNotification: function (val) {
+        console.log('&&&&&&& we have new inform &&&&&&&&&&: ' + val)
+        var param = {
+          id: 1,
+          title: '新通知',
+          text: '有新通知',
+          icon: 'http://3.bp.blogspot.com/-Qdsy-GpempY/UU_BN9LTqSI/AAAAAAAAAMA/LkwLW2yNBJ4/s1600/supersu.png',
+          smallIcon: 'res://cordova',
+          sound: null,
+          badge: 1,
+          data: { test: 1 }
+        }
+//        notificationUtil.scheduleSingle(param)
       }
     },
     methods: {
-      ...mapActions([GET_ALL_USER_ACCOUNT, GET_ALL_ROLE, GET_ALL_DUTY, GET_ALL_PERMISSION, GET_ALL_PERMISSION_ROLE, GET_ALL_USER_TASK_EXEC_DATA, USER_LOGOUT]),
+      ...mapActions([GET_ALL_USER_ACCOUNT, GET_ALL_ROLE, GET_ALL_DUTY, GET_ALL_PERMISSION, GET_ALL_PERMISSION_ROLE, GET_ALL_USER_TASK_EXEC_DATA, USER_LOGOUT, GET_NEW_INFORM_COUNT, GET_NEW_DUTY_NOTIFICATION_COUNT]),
       handleTabChange: function (id) {
         this.selectedTab = id
         if (id === 'today_task') {
@@ -69,10 +116,13 @@
         } else if (id === 'task_info') {
           this.$router.push({ name: 'allUserTasksStat' })
         } else if (id === 'notification') {
-          this.$router.push({ name: 'userMessage' })
+          this.$router.push({ name: 'userMessageCenter' })
         } else if (id === 'user_center') {
           this.$router.push({name: 'userCenter'})
         }
+      },
+      onBackButtonClick: function () {
+        this.$router.go(-1)
       }
     }
   }
@@ -86,6 +136,11 @@
   .header{
     background-color: #2196f3;
   }
+
+  /*.demo-icon-badge {*/
+    /*padding: 12px;*/
+    /*margin-right: 16px;*/
+  /*}*/
 
   .logo{
     font-size: 24px;

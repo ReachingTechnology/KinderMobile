@@ -3,33 +3,34 @@
     <h2>日任务列表</h2>
     <mu-divider shallowInset/>
     <mu-list>
-      <mu-sub-header>日常职责</mu-sub-header>
-      <router-link v-for="item in dayTask.DUTY_TIME_TYPE_ROUTINE" :to="{ name:'editTaskDetailPage',params:{ task: item, date: selectedDay } }">
-        <mu-list-item  :title="item.name" :describeText="item.executetime">
+      <!--<mu-sub-header>日常职责</mu-sub-header>-->
+      <mu-list-item  title="日常职责" :describeText="'共' + dayTask.DUTY_TIME_TYPE_ROUTINE.length + '项'" toggleNested :open="false">
+        <!--<mu-avatar icon="build" slot="leftAvatar"/>-->
+        <mu-list-item  v-for="item in dayTask.DUTY_TIME_TYPE_ROUTINE" @click="itemClicked(item)"slot="nested" :title="item.name" :describeText="item.executetime" :value="item">
             <mu-avatar :icon="item.icon" :backgroundColor="item.iconBgColor" slot="leftAvatar"/>
             <mu-icon value="info" slot="right"/>
         </mu-list-item>
-      </router-link>
+      </mu-list-item>
     </mu-list>
     <mu-divider shallowInset/>
     <mu-list>
-      <mu-sub-header>定期职责</mu-sub-header>
-      <router-link v-for="item in dayTask.DUTY_TIME_TYPE_PERIODICAL" :to="{ name:'editTaskDetailPage',params:{ task: item, date: selectedDay } }">
-        <mu-list-item  :title="item.name" :describeText="item.executetime">
+      <mu-list-item  title="定期职责" :describeText="'共' + dayTask.DUTY_TIME_TYPE_PERIODICAL.length + '项'" toggleNested :open="false">
+        <!--<mu-avatar icon="build" slot="leftAvatar"/>-->
+        <mu-list-item  v-for="item in dayTask.DUTY_TIME_TYPE_PERIODICAL" @click="itemClicked(item)"slot="nested" :title="item.name" :describeText="item.executetime" :value="item">
           <mu-avatar :icon="item.icon" :backgroundColor="item.iconBgColor" slot="leftAvatar"/>
           <mu-icon value="info" slot="right"/>
         </mu-list-item>
-      </router-link>
+      </mu-list-item>
     </mu-list>
     <mu-divider shallowInset/>
     <mu-list>
-      <mu-sub-header>特定日期职责</mu-sub-header>
-      <router-link v-for="item in dayTask.DUTY_TIME_TYPE_SPECIFIC" :to="{ name:'editTaskDetailPage',params:{ task: item, date: selectedDay } }">
-        <mu-list-item  :title="item.name" :describeText="item.executetime">
+      <mu-list-item  title="特定日期职责" :describeText="'共' + dayTask.DUTY_TIME_TYPE_SPECIFIC.length + '项'" toggleNested :open="false">
+        <!--<mu-avatar icon="build" slot="leftAvatar"/>-->
+        <mu-list-item  v-for="item in dayTask.DUTY_TIME_TYPE_SPECIFIC" @click="itemClicked(item)"slot="nested" :title="item.name" :describeText="item.executetime" :value="item">
           <mu-avatar :icon="item.icon" :backgroundColor="item.iconBgColor" slot="leftAvatar"/>
           <mu-icon value="info" slot="right"/>
         </mu-list-item>
-      </router-link>
+      </mu-list-item>
     </mu-list>
     <!--<div v-show="showEdit" style="height: 100%; z-index: 1000; position: fixed">-->
       <!--<mobile-edit-task-detail :edited_task="selectedTask" :visibility="showEdit"></mobile-edit-task-detail>-->
@@ -51,7 +52,7 @@
 </style>
 <script>
   import { mapActions, mapGetters } from 'vuex'
-  import { GET_TASK_EXEC_DATA_BY_DATE, COMMIT_TASK_EXEC_INFO } from '../../store/mutation_types'
+  import { GET_TASK_EXEC_DATA_BY_DATE, COMMIT_TASK_EXEC_INFO, CHANGE_APP_TITLE, SET_ROOT_VIEW } from '../../store/mutation_types'
   import { TASK_STATUS, TASK_STATUS_UNFINISHED, TASK_STATUS_DELAYED, TASK_STATUS_FINISHED, TASK_STATUS_PREPARE, TASK_STATUS_INPROCESS, TASK_STATUS_URGENT } from '../../store/common_defs'
   import dateUtil from '../../utils/DateUtil'
   import Moment from 'moment'
@@ -67,15 +68,20 @@
         }
         return ''
       },
-      ...mapActions([GET_TASK_EXEC_DATA_BY_DATE, COMMIT_TASK_EXEC_INFO]),
+      itemClicked (item) {
+        var task = item
+        this.$router.push({name: 'editTaskDetailPage', params: {task: task, date: dateUtil.getTheDay(task.startofday), showApprove: false}})
+      },
+      ...mapActions([GET_TASK_EXEC_DATA_BY_DATE, COMMIT_TASK_EXEC_INFO, CHANGE_APP_TITLE, SET_ROOT_VIEW]),
       handleEdit (item) {
         this.selectedTask = item
         this.showEdit = true
       },
       handleDaySelected () {
-        this.getTaskExecData(dateUtil.getStartOfTheday(this.selectedDay))
+        this.getTaskExecData()
       },
-      getTaskExecData (date) {
+      getTaskExecData () {
+        var date = dateUtil.getStartOfTheday(this.selectedDay)
         var param = {}
         param['userid'] = this.selectedUser
         param['startofday'] = date
@@ -108,6 +114,8 @@
       ...mapGetters(['userDayTask', 'user', 'datePickerOptionsDay']),
       dayTask () {
         var data = this.userDayTask
+        console.log('9999990000000000000000000000')
+        console.log(this.userDayTask)
         var keys = Object.keys(data)
         for (var m = 0, len0 = keys.length; m < len0; m++) {
           var timeType = keys[m]
@@ -125,13 +133,24 @@
         return this.user._id
       }
     },
+    beforeRouteEnter: function (to, from, next) {
+      next(vm => {
+        vm.CHANGE_APP_TITLE('今日任务')
+        vm.SET_ROOT_VIEW(true)
+        vm.getTaskExecData()
+      })
+    },
+    beforeRouteLeave: function (to, from, next) {
+      this.SET_ROOT_VIEW(false)
+      next()
+    },
     watch: {
       selectedUser: function (val, oldval) {
-        this.getTaskExecData(dateUtil.getStartOfTheday(this.selectedDay))
+        this.getTaskExecData()
       }
     },
     mounted: function () {
-      this.getTaskExecData(dateUtil.getStartOfTheday(this.selectedDay))
+      this.getTaskExecData()
     },
     data: () => {
       return {

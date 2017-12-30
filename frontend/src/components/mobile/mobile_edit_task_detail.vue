@@ -3,6 +3,9 @@
     <mu-text-field label="任务名称" v-model="task.name" disabled>
     </mu-text-field>
     <br/>
+    <mu-text-field label="任务详情" v-model="taskDescr" disabled>
+    </mu-text-field>
+    <br/>
     <mu-text-field label="任务执行时间" v-model="task.executetime" disabled>
     </mu-text-field>
     <br/>
@@ -10,13 +13,13 @@
                    disabled>
     </mu-text-field>
     <br/>
-    <mu-text-field label="未完成原因" v-model="task.comment" multiLine :rows="2" :rowsMax="4">
+    <mu-text-field label="未完成原因" :disabled="user._id !== task.userid" v-model="task.comment" :hintText="commentHint" multiLine :rows="2" :rowsMax="4">
     </mu-text-field>
     <br/>
     <mu-text-field label="完成状态" v-model="task.finish_status_display" disabled>
     </mu-text-field>
     <br/>
-    <mu-select-field v-model="task.approve_status" label="工作审批" hintText="待审批" :disabled="this.task.userid === this.user._id">
+    <mu-select-field v-model="task.approve_status" v-show="showApprove && !(user._id === task.userid)" label="工作审批" hintText="待审批" :disabled="this.task.userid === this.user._id">
       <mu-menu-item value=0   title="个人原因"/>
       <mu-menu-item value=1   title="工作安排"/>
     </mu-select-field>
@@ -37,6 +40,7 @@
   import {mapActions, mapGetters} from 'vuex'
   import {CHANGE_APP_TITLE, COMMIT_TASK_EXEC_INFO} from '../../store/mutation_types'
   import dateUtil from '../../utils/DateUtil'
+  import util from '../../store/utils'
   export default {
     components: {},
     name: 'duty_edit_panel',
@@ -54,16 +58,20 @@
       // Baidu location functionalities
       getLocation () {
         console.log('***************try to get location**************')
-        navigator.geolocation.getCurrentPosition(this.translateLoc, this.onGetLocationError, {timeout: 3000, enableHighAccuracy: true})
+        navigator.geolocation.getCurrentPosition(this.translateLoc, this.onGetLocationError, {timeout: 10000})
       },
       commitInfo (lat, lng) {
-        var finishTime = dateUtil.getNow()
         this.task.startofday = dateUtil.getStartOfTheday(this.selectedDay)
         var taskFinishInfo = {}
         taskFinishInfo.taskid = this.task.taskid
         taskFinishInfo.userid = this.task.userid
         taskFinishInfo.startofday = this.task.startofday
-        taskFinishInfo.realendtime = finishTime
+        if (this.task.realendtime === 0) {
+          var finishTime = dateUtil.getNow()
+          taskFinishInfo.realendtime = finishTime
+        } else {
+          taskFinishInfo.realendtime = this.task.realendtime
+        }
         taskFinishInfo.comment = this.task.comment
         taskFinishInfo.approve_status = this.task.approve_status
         taskFinishInfo.approve_user = this.task.approve_user
@@ -94,12 +102,26 @@
       ...mapActions([COMMIT_TASK_EXEC_INFO, CHANGE_APP_TITLE])
     },
     computed: {
-      ...mapGetters(['allRole', 'user'])
+      ...mapGetters(['allRole', 'user']),
+      taskDescr () {
+        return util.getDutyDescr(this.task.taskid)
+      },
+      commentHint () {
+        if (this.user._id !== this.task.userid) {
+          return ''
+        } else if (this.task.realendtime === 0) {
+          return '按时完成，请直接点击\'完成\'按钮即可'
+        } else {
+          return '填写未完成原因'
+        }
+      }
     },
     created: function () {
     },
     beforeRouteEnter: function (to, from, next) {
-      next(vm => { vm.CHANGE_APP_TITLE('员工任务详情') })
+      next(vm => {
+        vm.CHANGE_APP_TITLE('员工任务详情')
+      })
     },
     data () {
       return {
@@ -108,6 +130,7 @@
         selectedRoleName: [],
         task: this.$route.params.task,
         selectedDay: this.$route.params.date,
+        showApprove: this.$route.params.showApprove,
         isCommitting: false
       }
     }

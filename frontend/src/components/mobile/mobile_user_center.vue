@@ -3,11 +3,11 @@
     <br/>
     <mu-avatar slot="center" icon="person" :size="100"></mu-avatar>
     <br/>
-    <mu-text-field disabled="true" label="编号" v-model="currentUser._id" labelFloat/>
+    <mu-text-field :disabled="true" label="编号" v-model="currentUser._id" labelFloat/>
     <br/>
-    <mu-text-field disabled="true" label="姓名" v-model="currentUser.name" labelFloat/>
+    <mu-text-field :disabled="true" label="姓名" v-model="currentUser.name" labelFloat/>
     <br/>
-    <mu-text-field disabled="true" label="岗位" v-model="currentUser.roleName" labelFloat/>
+    <mu-text-field :disabled="true" label="岗位" v-model="currentUser.roleName" labelFloat/>
     <br/>
     <div>
       <!--<mu-raised-button style="display:inline-block" size="normal" label="修改密码" @click.native="handleChgPass" primary/>-->
@@ -23,7 +23,7 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import { USER_LOGOUT, CHANGE_APP_TITLE } from '../../store/mutation_types'
+  import { USER_LOGOUT, CHANGE_APP_TITLE, SET_ROOT_VIEW } from '../../store/mutation_types'
   import ObjUtil from '../../utils/ObjUtil'
   import Util from '../../store/utils'
 
@@ -46,7 +46,14 @@
       }
     },
     beforeRouteEnter: function (to, from, next) {
-      next(vm => { vm.CHANGE_APP_TITLE('个人中心') })
+      next(vm => {
+        vm.CHANGE_APP_TITLE('个人中心')
+        vm.SET_ROOT_VIEW(true)
+      })
+    },
+    beforeRouteLeave: function (to, from, next) {
+      this.SET_ROOT_VIEW(false)
+      next()
     },
     methods: {
       handleLogout () {
@@ -58,11 +65,12 @@
       logout () {
         this.askLogout = false
         this.USER_LOGOUT()
+        this.$router.push({ name: 'userLogin' })
       },
       handleChgPass () {
 
       },
-      ...mapActions([CHANGE_APP_TITLE, USER_LOGOUT])
+      ...mapActions([CHANGE_APP_TITLE, USER_LOGOUT, SET_ROOT_VIEW])
     }
   }
 </script>

@@ -7,7 +7,9 @@ import {
   TASK_STATUS_UNFINISHED,
   TASK_STATUS_DELAYED,
   TASK_STATUS_FINISHED,
-  DUTY_TIME_TYPE_SPECIFIC
+  DUTY_TIME_TYPE_SPECIFIC,
+  DUTY_TIME_TYPE_ROUTINE,
+  DUTY_TIME_TYPE_PERIODICAL,
 } from './common_defs'
 import Moment from 'moment'
 import dateUtil from '../utils/DateUtil'
@@ -89,8 +91,6 @@ const mutations = {
     var currentTime = dateUtil.getNow()
     state.userDayTask = data
     var keys = Object.keys(state.userDayTask)
-    console.log('5555555555555555555555')
-    console.log(keys.length)
     let startofyesterday = dateUtil.getStartOfToday() - 3600 * 24
     for (var m = 0, len0 = keys.length; m < len0; m++) {
       var timeType = keys[m]
@@ -127,6 +127,16 @@ const mutations = {
           // }
         // }
       }
+    }
+
+    if (state.userDayTask[DUTY_TIME_TYPE_ROUTINE] === undefined) {
+      state.userDayTask[DUTY_TIME_TYPE_ROUTINE] = []
+    }
+    if (state.userDayTask[DUTY_TIME_TYPE_PERIODICAL] === undefined) {
+      state.userDayTask[DUTY_TIME_TYPE_PERIODICAL] = []
+    }
+    if (state.userDayTask[DUTY_TIME_TYPE_SPECIFIC] === undefined) {
+      state.userDayTask[DUTY_TIME_TYPE_SPECIFIC] = []
     }
     console.log(state.userDayTask)
   },
@@ -224,6 +234,17 @@ const mutations = {
   },
   SET_USER_INFORM_DATA (state, data) {
     state.userInform = data
+  },
+  SET_USER_DUTY_NOTIFICATION_DATA (state, data) {
+    state.userDutyNotification = data
+  },
+  SET_NEW_DUTY_NOTIFICATION_COUNT (state, data) {
+    state.newDutyNotificationCount = data.count
+    state.totalNewNotification = state.newDutyNotificationCount + state.newInformCount
+  },
+  SET_NEW_INFORM_COUNT (state, data) {
+    state.newInformCount = data.count
+    state.totalNewNotification = state.newDutyNotificationCount + state.newInformCount
   }
 }
 export default mutations

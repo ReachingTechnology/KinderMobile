@@ -10,15 +10,18 @@ import { CHANGE_APP_TITLE, SET_ACTIVE_MENU, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL
   COMMIT_TASK_EXEC_INFO, GET_TASK_EXEC_DATA_BY_DATE, GET_USER_TASK_EXEC_DATA_BY_DATERANGE, GET_ONE_TASK_EXEC_DATA_BY_DATERANGE,
   GET_ALL_DUTY, UPSERT_DUTY, REMOVE_DUTIES, GET_ALL_DUTY_CATEGORY, UPSERT_DUTY_CATEGORY, REMOVE_DUTY_CATEGORIES,
   GET_ALL_USER_LOCATION, UPSERT_USER_LOCATION,
-  GET_ALL_INFORM, GET_INFORM_BY_USER, UPSERT_INFORM, REMOVE_INFORMS } from './mutation_types'
+  GET_ALL_INFORM, GET_DUTY_NOTIFICATION_BY_USER, GET_INFORM_BY_USER, UPSERT_INFORM, REMOVE_INFORMS, GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT,
+  SET_ROOT_VIEW } from './mutation_types'
 // import dateUtil from '../utils/DateUtil'
 import state from './state'
 import dateUtil from '../utils/DateUtil'
+import {DUTY_TIME_TYPE_ALL} from './common_defs'
 
 axios.defaults.baseURL = state.backend_uri
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest'
+
 // axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 function handleError (error) {
@@ -45,6 +48,7 @@ const actions = {
     data._id = ''
     data.name = ''
     store.commit('SET_USER', data)
+    store.state.isRootView = false
   },
   [ USER_CHANGE_PASS ]: function (store, param) {
     store.state.changePassFail = true
@@ -335,8 +339,8 @@ const actions = {
         let newparam = {}
         newparam.userid = param.userid
         newparam.startofday = param.startofday
-        newparam.timeType = param.timeType
-        axios.post('/user/get_task_exec_info_by_date', newparam)
+        newparam.timeType = DUTY_TIME_TYPE_ALL
+        axios.post('/user/mobile_get_task_exec_info_by_date', newparam)
           .then(function (response) {
             store.commit('SET_USER_DUTY_EXEC_DATA', response.data)
           })
@@ -441,6 +445,17 @@ const actions = {
       })
       .catch(handleError)
   },
+  [ GET_DUTY_NOTIFICATION_BY_USER ]: function (store, param) {
+    'use strict'
+    console.log('query duty notification by user:::::::')
+    axios.post('/inform/get_duty_notification_by_user', {'userid': store.state.user['_id'], 'queryTime': dateUtil.getNow(), 'startofday': dateUtil.getStartOfToday()})
+      .then(function (response) {
+        console.log('get duty notifcation by user:')
+        console.log(response.data)
+        store.commit('SET_USER_DUTY_NOTIFICATION_DATA', response.data)
+      })
+      .catch(handleError)
+  },
   [ GET_INFORM_BY_USER ]: function (store, param) {
     'use strict'
     console.log('query inform by user:::::::')
@@ -465,6 +480,30 @@ const actions = {
       .then(function (response) {
         store.dispatch(GET_ALL_INFORM)
       })
+  },
+  [ GET_NEW_DUTY_NOTIFICATION_COUNT ]: function (store, param) {
+    'use strict'
+    axios.post('/inform/get_new_duty_notification_count', {'userid': store.state.user['_id'], 'queryTime': dateUtil.getNow(), 'startofday': dateUtil.getStartOfToday()})
+      .then(function (response) {
+        console.log('got new duty notification count' + response.data.count)
+        store.commit('SET_NEW_DUTY_NOTIFICATION_COUNT', response.data)
+      })
+      .catch(handleError)
+  },
+  [ GET_NEW_INFORM_COUNT ]: function (store, param) {
+    'use strict'
+    axios.post('/inform/get_new_inform_count', {'userid': store.state.user['_id'], 'queryTime': dateUtil.getNow()})
+      .then(function (response) {
+        console.log('got new inform count' + response.data.count)
+        store.commit('SET_NEW_INFORM_COUNT', response.data)
+      })
+      .catch(handleError)
+  },
+  /*
+   Layout
+   */
+  [ SET_ROOT_VIEW ]: function (store, param) {
+    store.state.isRootView = param
   }
 }
 

@@ -9,7 +9,10 @@ import MobileAllUserTasksStat from '../components/mobile/mobile_all_user_tasks_s
 import MobileOneUserAllTaskStat from '../components/mobile/mobile_one_user_all_task_stat.vue'
 import MobileOneUserOneTaskStat from '../components/mobile/mobile_one_user_one_task_stat.vue'
 import MobileUserCenter from '../components/mobile/mobile_user_center.vue'
-import MobileUserMessage from '../components/mobile/mobile_user_message_list.vue'
+import MobileUserMessageCenter from '../components/mobile/mobile_user_message_center.vue'
+import MobileUserDutyNotificationList from '../components/mobile/mobile_user_duty_notification_list.vue'
+import MobileUserInformList from '../components/mobile/mobile_user_inform_list.vue'
+import MobileUserLogin from '../components/mobile/mobile_user_login.vue'
 
 Vue.use(Router)
 Vue.use(Vuex)
@@ -17,7 +20,15 @@ Vue.use(Vuex)
 const router = new Router({
   routes: [
     {
-      path: '/',
+      path: '/userLogin',
+      name: 'userLogin',
+      component: MobileUserLogin,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/userDayTask',
       name: 'userDayTask',
       component: MobileUserDayTask,
       meta: {
@@ -25,11 +36,11 @@ const router = new Router({
       }
     },
     {
-      path: '/editTaskDetail/:task/:date',
+      path: '/editTaskDetail/:task/:date/:showApprove',
       name: 'editTaskDetailPage',
       component: MobileEditTaskDetail,
       meta: {
-        keepAlive: false
+        keepAlive: true
       }
     },
     {
@@ -37,11 +48,12 @@ const router = new Router({
       name: 'allUserTasksStat',
       component: MobileAllUserTasksStat,
       meta: {
+        allowBack: true,
         keepAlive: true
       }
     },
     {
-      path: '/oneUserAllTaskStat/:selectedData',
+      path: '/oneUserAllTaskStat/:userid/:startofday/:endofday',
       name: 'oneUserAllTaskStat',
       component: MobileOneUserAllTaskStat,
       meta: {
@@ -49,7 +61,7 @@ const router = new Router({
       }
     },
     {
-      path: '/oneUserOneTaskStat/:selectedData',
+      path: '/oneUserOneTaskStat/:userid/:taskid/:startofday/:endofday',
       name: 'oneUserOneTaskStat',
       component: MobileOneUserOneTaskStat,
       meta: {
@@ -61,18 +73,35 @@ const router = new Router({
       name: 'userCenter',
       component: MobileUserCenter,
       meta: {
-        keepAlive: false
+        keepAlive: true
       }
     },
     {
-      path: '/userMessage',
-      name: 'userMessage',
-      component: MobileUserMessage,
+      path: '/userMessageCenter',
+      name: 'userMessageCenter',
+      component: MobileUserMessageCenter,
       meta: {
-        keepAlive: false
+        keepAlive: true
+      }
+    },
+    {
+      path: '/userDutyNotificationList',
+      name: 'userDutyNotificationList',
+      component: MobileUserDutyNotificationList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/userInformList',
+      name: 'userInformList',
+      component: MobileUserInformList,
+      meta: {
+        keepAlive: true
       }
     }
-  ]
+  ],
+  mode: 'history'
 })
 /**
  * 登录钩子函数

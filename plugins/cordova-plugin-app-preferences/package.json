@@ -1,0 +1,81 @@
+{
+  "_from": "cordova-plugin-app-preferences",
+  "_id": "cordova-plugin-app-preferences@0.99.3",
+  "_inBundle": false,
+  "_integrity": "sha1-IfY+y0aYuXvbgS5sFpK6XzLci9A=",
+  "_location": "/cordova-plugin-app-preferences",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-plugin-app-preferences",
+    "name": "cordova-plugin-app-preferences",
+    "escapedName": "cordova-plugin-app-preferences",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-app-preferences/-/cordova-plugin-app-preferences-0.99.3.tgz",
+  "_shasum": "21f63ecb4698b97bdb812e6c1692ba5f32dc8bd0",
+  "_spec": "cordova-plugin-app-preferences",
+  "_where": "/Users/HOZ/Projects/KinderMobile/node_modules",
+  "author": {
+    "name": "Ivan Baktsheev"
+  },
+  "bin": {
+    "cordova-app-preferences-generator": "bin/build-app-settings.js"
+  },
+  "bugs": {
+    "url": "https://github.com/apla/me.apla.cordova.app-preferences/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-plugin-app-preferences",
+    "platforms": [
+      "android",
+      "ios",
+      "osx",
+      "wp7",
+      "wp8",
+      "windows8",
+      "windows",
+      "blackberry10"
+    ]
+  },
+  "deprecated": false,
+  "description": "Application preferences plugin and preference pane generator",
+  "devDependencies": {
+    "cordova": ">=5.4.1",
+    "elementtree": "^0.1.6",
+    "ios-sim": ">=5.0.5",
+    "jasmine": "^2.3.2",
+    "plist": "1.1.0",
+    "q": "^1.4.1",
+    "serve-me": "^0.8.2"
+  },
+  "homepage": "https://github.com/apla/me.apla.cordova.app-preferences",
+  "keywords": [
+    "preferences",
+    "settings",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios",
+    "cordova-osx",
+    "cordova-wp7",
+    "cordova-wp8",
+    "cordova-windows",
+    "cordova-windows8",
+    "cordova-blackberry10"
+  ],
+  "license": "Apache-2.0",
+  "name": "cordova-plugin-app-preferences",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apla/me.apla.cordova.app-preferences.git"
+  },
+  "version": "0.99.3"
+}

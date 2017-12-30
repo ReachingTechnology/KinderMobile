@@ -30,7 +30,7 @@
 </style>
 <script>
   import { mapActions, mapGetters } from 'vuex'
-  import { CHANGE_APP_TITLE, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, GET_USER_TASK_EXEC_DATA_BY_DATERANGE } from '../../store/mutation_types'
+  import { CHANGE_APP_TITLE, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, GET_USER_TASK_EXEC_DATA_BY_DATERANGE, SET_ROOT_VIEW } from '../../store/mutation_types'
   import dateUtil from '../../utils/DateUtil'
   import Moment from 'moment'
 
@@ -49,11 +49,7 @@
         console.log(Moment().format('YYYY-MM-DD'))
       },
       itemClicked (item) {
-        this.selectedData = {}
-        this.selectedData.userid = item.value.userid
-        this.selectedData.startofday = dateUtil.getDatetimeSeconds(this.startQueryDate)
-        this.selectedData.endofday = dateUtil.getDatetimeSeconds(this.endQueryDate)
-        this.$router.push({name: 'oneUserAllTaskStat', params: {selectedData: this.selectedData}})
+        this.$router.push({name: 'oneUserAllTaskStat', params: {userid: item.value.userid, startofday: dateUtil.getDatetimeSeconds(this.startQueryDate), endofday: dateUtil.getDatetimeSeconds(this.endQueryDate)}})
       },
       getData () {
         var param = {}
@@ -64,22 +60,25 @@
       showEditOver () {
         this.showEdit = false
       },
-      ...mapActions([CHANGE_APP_TITLE, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, GET_USER_TASK_EXEC_DATA_BY_DATERANGE])
+      ...mapActions([CHANGE_APP_TITLE, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, GET_USER_TASK_EXEC_DATA_BY_DATERANGE, SET_ROOT_VIEW])
     },
     computed: {
       ...mapGetters(['all_statistic_data', 'allUser', 'user'])
     },
-    mounted: function () {
-      this.getData()
-    },
     beforeRouteEnter: function (to, from, next) {
-      next(vm => { vm.CHANGE_APP_TITLE('安保统计报表') })
+      next(vm => {
+        vm.CHANGE_APP_TITLE('安保统计报表')
+        vm.SET_ROOT_VIEW(true)
+        vm.getData() })
+    },
+    beforeRouteLeave: function (to, from, next) {
+      this.SET_ROOT_VIEW(false)
+      next()
     },
     props: ['datePickerOption'],
     data: () => {
       return {
         showEdit: false,
-        selectedData: {},
         selectedDay: new Date(),
         startQueryDate: Moment(dateUtil.getStartofThisMonth() * 1000).format('YYYY-MM-DD'),
         endQueryDate: Moment().format('YYYY-MM-DD'),

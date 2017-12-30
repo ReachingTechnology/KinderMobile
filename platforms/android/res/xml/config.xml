@@ -13,6 +13,15 @@
     <feature name="Geolocation">
         <param name="android-package" value="org.apache.cordova.geolocation.Geolocation" />
     </feature>
+    <feature name="AppPreferences">
+        <param name="android-package" value="me.apla.cordova.AppPreferences" />
+    </feature>
+    <feature name="CookieMaster">
+        <param name="android-package" value="com.cordova.plugins.cookiemaster.CookieMaster" />
+    </feature>
+    <feature name="LocalNotification">
+        <param name="android-package" value="de.appplant.cordova.plugin.localnotification.LocalNotification" />
+    </feature>
     <name>幼儿园安保</name>
     <description>
         幼儿园安保系统@ReachingTech

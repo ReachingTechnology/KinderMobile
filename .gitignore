@@ -4,6 +4,7 @@ index.html
 *.pyc
 /www
 /res
+platforms/android/assets
 
 # Editor directories and files
 .idea

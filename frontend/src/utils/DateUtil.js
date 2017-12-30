@@ -26,8 +26,6 @@ _DateUtil.prototype.getStartOfToday = function () {
   let min = date.getMinutes()
   let second = date.getSeconds()
   let miliseconds = date.getMilliseconds()
-  console.log('get start of today')
-  console.log((date.getTime() - hour * 3600 * 1000 - min * 60 * 1000 - second * 1000 - miliseconds) / 1000)
   return (date.getTime() - hour * 3600 * 1000 - min * 60 * 1000 - second * 1000 - miliseconds) / 1000
 }
 _DateUtil.prototype.getStartOfTheday = function (dayDate) {

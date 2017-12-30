@@ -22,6 +22,10 @@ const state = {
   dutyForRoles: {},
   allInform: [],
   userInform: [],
+  userDutyNotification: [],
+  newInformCount: 0,
+  newDutyNotificationCount: 0,
+  totalNewNotification: 0,
   // 后端服务器地址
   // backend_uri: 'https://192.168.31.69:7070',
   backend_uri: 'https://47.94.192.237:7070',
@@ -87,6 +91,7 @@ const state = {
     //   return false
     // }
   },
-  changePassFail: false
+  changePassFail: false,
+  isRootView: false
 }
 export default state

@@ -1,0 +1,67 @@
+{
+  "_from": "cordova-plugin-cookiemaster",
+  "_id": "cordova-plugin-cookiemaster@1.0.5",
+  "_inBundle": false,
+  "_integrity": "sha512-5cYEH+/85TGmyY+NYdQxLhK6i2RkF57TnQOAtdoz4a3GOycYzD7pGqUBAj2j4DU/KI5As4TwrpZkQS7sX+WO8A==",
+  "_location": "/cordova-plugin-cookiemaster",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-plugin-cookiemaster",
+    "name": "cordova-plugin-cookiemaster",
+    "escapedName": "cordova-plugin-cookiemaster",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-cookiemaster/-/cordova-plugin-cookiemaster-1.0.5.tgz",
+  "_shasum": "0177379eceb5c4e352162008db9c09f8bcf41e2a",
+  "_spec": "cordova-plugin-cookiemaster",
+  "_where": "/Users/HOZ/Projects/KinderMobile/node_modules",
+  "author": {
+    "name": "Edward Gao"
+  },
+  "bugs": {
+    "url": "https://github.com/edwardgaoyb/cordova-cookie-master/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "com.cordova.plugins.cookiemaster",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "deprecated": false,
+  "description": "This plugin enables the management of cookies in WebViews on iOS and Android as those platforms restrict the use of \"document.cookie\".",
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "homepage": "https://github.com/edwardgaoyb/cordova-cookie-master#readme",
+  "keywords": [
+    "cordova",
+    "phonegap",
+    "cookie",
+    "cookies",
+    "cookie-manager",
+    "cookie-plugin",
+    "ecosystem:cordova",
+    "cordova-ios",
+    "cordova-android"
+  ],
+  "license": "MIT",
+  "name": "cordova-plugin-cookiemaster",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edwardgaoyb/cordova-cookie-master.git"
+  },
+  "version": "1.0.5"
+}

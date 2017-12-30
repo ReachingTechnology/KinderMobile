@@ -57,6 +57,14 @@ _Util.prototype.getDutyName = function (dutyId) {
   }
   return ''
 }
+_Util.prototype.getDutyDescr = function (dutyId) {
+  for (var i = 0, len = state.allDuty.length; i < len; i++) {
+    if (state.allDuty[i]._id === dutyId) {
+      return state.allDuty[i].descr
+    }
+  }
+  return ''
+}
 _Util.prototype.getRoleById = function (roleId) {
   for (var i = 0, len = state.allRole.length; i < len; i++) {
     if (state.allRole[i]._id === roleId) {

@@ -58,48 +58,64 @@
       itemClicked (item) {
         var task = objUtil.clone(item.value)
         task.name = item.value.taskname
-        this.$router.push({name: 'editTaskDetailPage', params: {task: task, date: dateUtil.getTheDay(task.startofday)}})
+        this.$router.push({name: 'editTaskDetailPage', params: {task: task, date: dateUtil.getTheDay(task.startofday), showApprove: true}})
+      },
+      getData () {
+        var params = {}
+        params.userid = this.userid
+        params.taskid = this.taskid
+        if (typeof this.startofday === 'string') {
+          params.startofday = parseInt(this.startofday)
+        } else {
+          params.startofday = this.startofday
+        }
+        if (typeof this.endofday === 'string') {
+          params.endofday = parseInt(this.endofday)
+        } else {
+          params.endofday = this.endofday
+        }
+        this.GET_ONE_TASK_EXEC_DATA_BY_DATERANGE(params)
       }
     },
     computed: {
       ...mapGetters(['taskExecDaterangeData', 'user', 'datePickerOptionsDay']),
       time_range () {
-        return Moment(this.selectedData.startofday * 1000).format('M月D日') + '到' + Moment(this.selectedData.endofday * 1000).format('M月D日')
+        return Moment(this.startofday * 1000).format('M月D日') + '到' + Moment(this.endofday * 1000).format('M月D日')
       },
       tasks () {
         var data = []
-        console.log(this.selectedData)
-        console.log(this.taskExecDaterangeData)
         for (var i = 0, len = this.taskExecDaterangeData.length; i < len; i++) {
           var item = this.taskExecDaterangeData[i]
           item.executetime = Moment(item.starttime * 1000).format('h:mm') + ' 到 ' + Moment(item.endtime * 1000).format('h:mm')
           item.realendtimeDisplay = item.realendtime === 0 ? '' : Moment(item.realendtime * 1000).format('M月D日 hh:mm')
           item.finish_status_display = TASK_STATUS.get(item.finish_status)
           item.startofdayDisplay = Moment(item.startofday * 1000).format('M月D日')
-          item.taskname = this.selectedData.taskname
-          item.taskid = this.selectedData.taskid
-          item.userid = this.selectedData.userid
-          console.log('%%%%%%%%%%%%%%%')
-          console.log(item)
+          item.taskname = this.taskName
+          item.taskid = this.taskid
+          item.userid = this.userid
           data.push(item)
         }
         return data
       },
       queryUser () {
-        return Util.getUserName(this.selectedData.userid)
+        return Util.getUserName(this.userid)
+      },
+      taskName () {
+        return Util.getDutyName(this.taskid)
       }
     },
-    mounted: function () {
-      console.log('%%%%%%%%%%%%%%^^^^^^^^^^^^^^^')
-      console.log(this.selectedData)
-      this.GET_ONE_TASK_EXEC_DATA_BY_DATERANGE(this.selectedData)
-    },
-    beforeRouteLeave: function (to, from, next) {
-      this.$destroy()
-      next()
-    },
+//    beforeRouteLeave: function (to, from, next) {
+//      this.$destroy()
+//      next()
+//    },
     beforeRouteEnter: function (to, from, next) {
-      next(vm => { vm.CHANGE_APP_TITLE('用户任务[' + vm.selectedData.taskname + ']完成情况统计') })
+      console.log(to)
+      next(vm => {
+        vm.CHANGE_APP_TITLE('用户任务[' + vm.taskName + ']完成情况统计')
+        console.log(vm.$route)
+        console.log('one user one task get data!!!')
+        vm.getData()
+      })
     },
     props: [],
     data: function () {
@@ -108,7 +124,12 @@
         selectedUser: '000001',
         showEdit: false,
         selectedTask: {},
-        selectedData: this.$route.params.selectedData
+        taskid: this.$route.params.taskid,
+        userid: this.$route.params.userid,
+        startofday: this.$route.params.startofday,
+        endofday: this.$route.params.endofday
+//        queryUser: Util.getUserName(this.$route.params.userid),
+//        time_range: Moment(this.$route.params.startofday * 1000).format('M月D日') + '到' + Moment(this.$route.params.endofday * 1000).format('M月D日')
       }
     },
     components: {
