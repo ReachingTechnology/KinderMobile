@@ -30,6 +30,7 @@ const getters = {
   datePickerOptionsDay: state => { return state.datePickerOptionsDay },
   datePickerOptionsMonth: state => { return state.datePickerOptionsMonth },
   changePassFail: state => { return state.changePassFail },
-  isRootView: state => { return state.isRootView }
+  isRootView: state => { return state.isRootView },
+  taskQueryDate: state => { return state.taskQueryDate }
 }
 export default getters

@@ -21,12 +21,22 @@
         <mu-bottom-nav :value="selectedTab" @change="handleTabChange">
           <mu-bottom-nav-item value="today_task" title="今日任务" icon="assignment"/>
           <mu-bottom-nav-item value="task_info" title="任务统计" icon="assessment"/>
-          <mu-bottom-nav-item value="notification" title="消息通知" icon="email">
-            <!--<mu-badge :content="totalNewNotification" class="demo-icon-badge" circle secondary v-show="totalNewNotification > 0">-->
-              <!--<mu-icon value="email"/>-->
-            <!--</mu-badge>-->
-            <!--<mu-icon value="email" v-show="totalNewNotification <= 0"/>-->
+          <mu-bottom-nav-item value="notification" v-show="totalNewNotification > 0" title="消息通知">
+            <mu-badge :content="totalNewNotification" class="demo-icon-badge" circle secondary>
+              <mu-icon value="email"/>
+            </mu-badge>
           </mu-bottom-nav-item>
+          <mu-bottom-nav-item value="notification" v-show="totalNewNotification > 0" v-show="totalNewNotification <= 0" title="消息通知" icon="email">
+          <!--<button class="mu-buttom-item" type="button" tabindex="0" style="user-select: none; outline: none; cursor: pointer; -webkit-appearance: none;">-->
+            <!--<div class="mu-buttom-item-wrapper">-->
+              <!--<div class="mu-ripple-wrapper"></div>-->
+              <!--<div style="display:inline-block;position:relative">-->
+                <!--<i class="mu-bottom-item-icon mu-icon material-icons">email</i>-->
+                <!--<div class="mu-badge mu-badge-circle mu-badge-secondary kinder-badge-float">1</div>-->
+              <!--</div>-->
+              <!--<span class="mu-bottom-item-text">消息通知</span>-->
+            <!--</div>-->
+          <!--</button>-->
           <mu-bottom-nav-item value="user_center" title="用户中心" icon="account_box"/>
         </mu-bottom-nav>
       </mu-paper>
@@ -73,6 +83,15 @@
 //      this.user._id = '000001'
 //      this.user.role = ['ROLE_0001', 'ROLE_0004']
 //      this.user.name = 'zhanghao'
+    },
+    mounted: function () {
+//      var bottomIcons = document.getElementsByClassName('mu-bottom-item-icon')
+//      var badgeText1 = '<div style="display:inline-block;position:relative">'
+//      var badgeText2 = '<div class="mu-badge mu-badge-circle mu-badge-secondary kinder-badge-float">1</div></div>'
+//      if (bottomIcons.length >= 2) {
+//        bottomIcons[2].insertAdjacentHTML('beforebegin', badgeText1)
+//        bottomIcons[2].insertAdjacentHTML('afterend', badgeText2)
+//      }
     },
     data: () => {
       return {
@@ -189,6 +208,19 @@
     left: 0;
     bottom: 0;
     z-index:1000;
+  }
+
+  .kinder-badge-float{
+    position: relative;
+    top: -12px;
+    right: 16px;
+    display:inline-block;
+    width: 20px;
+    height:20px;
+  }
+
+  .mu-bottom-item-icon:after{
+    content: '<em class="mu-badge mu-badge-circle mu-badge-secondary mu-badge-float"> 1 </em>'
   }
   /*.bottom_bar_title {*/
   /*color: white;*/

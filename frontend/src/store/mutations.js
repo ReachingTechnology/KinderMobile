@@ -55,38 +55,6 @@ const mutations = {
       state.userDayTask.push(item)
     }
   },
-  UPDATE_USER_DUTY_EXEC_DATA (state, data) {
-    var startOfToday = dateUtil.getStartOfToday()
-    var currentTime = new Date().getTime() / 1000
-    for (var i = 0, len = state.userDayTask.length; i < len; i++) {
-      var item = state.userDayTask[i]
-      for (var j = 0, len2 = data.length; j < len2; j++) {
-        if (item._id === data[j].duty_id) {
-          item.realendtime = data[j].realendtime
-          item.comment = data[j].comment
-          item.startofday = data[j].startofday
-          var taskTodayStarttime = item.starttime + startOfToday
-          var taskTodayEndtime = item.endtime + startOfToday
-          if (item.realendtime === 0) {
-            if (taskTodayStarttime > currentTime) {
-              item.finish_status = TASK_STATUS_PREPARE
-            } else if (taskTodayEndtime > currentTime) {
-              item.finish_status = TASK_STATUS_INPROCESS
-            } else {
-              item.finish_status = TASK_STATUS_UNFINISHED
-            }
-          } else {
-            if (item.realendtime > taskTodayEndtime + 600) {
-              item.finish_status = TASK_STATUS_DELAYED
-            } else {
-              item.finish_status = TASK_STATUS_FINISHED
-            }
-          }
-          break
-        }
-      }
-    }
-  },
   SET_USER_DUTY_EXEC_DATA (state, data) {
     var currentTime = dateUtil.getNow()
     state.userDayTask = data
@@ -99,30 +67,25 @@ const mutations = {
         var item = dayTask[i]
         item.starttime += startofyesterday
         item.endtime += startofyesterday
-        // for (var j = 0, len2 = dayTask.length; j < len2; j++) {
-        //   if (item.taskid === dayTask[j].taskid) {
-        //     item.realendtime = dayTask[j].realendtime
-        //     item.comment = dayTask[j].comment
-        //     item.startofday = dayTask[j].startofday
-            var taskStartTime = item.starttime - startofyesterday + item.startofday
-            var taskEndTime = item.endtime - startofyesterday + item.startofday
-            if (item.realendtime === 0) {
-              if (taskStartTime > currentTime) {
-                item.finish_status = TASK_STATUS_PREPARE
-              } else if (taskEndTime > currentTime) {
-                item.finish_status = TASK_STATUS_INPROCESS
-              } else {
-                item.finish_status = TASK_STATUS_UNFINISHED
-              }
-            } else {
-              if (item.realendtime - item.startofday >= 3600 * 24) {
-                item.finish_status = TASK_STATUS_UNFINISHED
-              } else if (item.realendtime > taskEndTime + 600) {
-                item.finish_status = TASK_STATUS_DELAYED
-              } else {
-                item.finish_status = TASK_STATUS_FINISHED
-              }
-            }
+        //     var taskStartTime = item.starttime - startofyesterday + item.startofday
+        //     var taskEndTime = item.endtime - startofyesterday + item.startofday
+        //     if (item.realendtime === 0) {
+        //       if (taskStartTime > currentTime) {
+        //         item.finish_status = TASK_STATUS_PREPARE
+        //       } else if (taskEndTime > currentTime) {
+        //         item.finish_status = TASK_STATUS_INPROCESS
+        //       } else {
+        //         item.finish_status = TASK_STATUS_UNFINISHED
+        //       }
+        //     } else {
+        //       if (item.realendtime - item.startofday >= 3600 * 24) {
+        //         item.finish_status = TASK_STATUS_UNFINISHED
+        //       } else if (item.realendtime > taskEndTime + 600) {
+        //         item.finish_status = TASK_STATUS_DELAYED
+        //       } else {
+        //         item.finish_status = TASK_STATUS_FINISHED
+        //       }
+        //     }
           //   break
           // }
         // }
@@ -152,23 +115,24 @@ const mutations = {
       item.realendtime = data[i].realendtime
       item.comment = data[i].comment
       item.startofday = data[i].startofday
-      var taskStartTime = item.starttime + item.startofday
-      var taskEndTime = item.endtime + item.startofday
-      if (item.realendtime === 0) {
-        if (taskStartTime > currentTime) {
-          item.finish_status = TASK_STATUS_PREPARE
-        } else if (taskEndTime > currentTime) {
-          item.finish_status = TASK_STATUS_INPROCESS
-        } else {
-          item.finish_status = TASK_STATUS_UNFINISHED
-        }
-      } else {
-        if (item.realendtime > taskEndTime + 600) {
-          item.finish_status = TASK_STATUS_DELAYED
-        } else {
-          item.finish_status = TASK_STATUS_FINISHED
-        }
-      }
+      item.finish_status = data[i].finish_status
+      // var taskStartTime = item.starttime + item.startofday
+      // var taskEndTime = item.endtime + item.startofday
+      // if (item.realendtime === 0) {
+      //   if (taskStartTime > currentTime) {
+      //     item.finish_status = TASK_STATUS_PREPARE
+      //   } else if (taskEndTime > currentTime) {
+      //     item.finish_status = TASK_STATUS_INPROCESS
+      //   } else {
+      //     item.finish_status = TASK_STATUS_UNFINISHED
+      //   }
+      // } else {
+      //   if (item.realendtime > taskEndTime + 600) {
+      //     item.finish_status = TASK_STATUS_DELAYED
+      //   } else {
+      //     item.finish_status = TASK_STATUS_FINISHED
+      //   }
+      // }
     }
   },
   SET_ALL_USER_ACCOUNT (state, data) {
@@ -245,6 +209,12 @@ const mutations = {
   SET_NEW_INFORM_COUNT (state, data) {
     state.newInformCount = data.count
     state.totalNewNotification = state.newDutyNotificationCount + state.newInformCount
+  },
+  SET_ROOT_VIEW (state, data) {
+    state.isRootView = data
+  },
+  SET_TASK_QUERY_DATE (state, data) {
+    state.taskQueryDate = data
   }
 }
 export default mutations

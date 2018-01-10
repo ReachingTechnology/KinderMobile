@@ -63,3 +63,5 @@ export const GET_NEW_INFORM_COUNT = 'GET_NEW_INFORM_COUNT'
 
 // layout
 export const SET_ROOT_VIEW = 'SET_ROOT_VIEW'
+
+export const SET_TASK_QUERY_DATE = 'SET_TASK_QUERY_DATE'

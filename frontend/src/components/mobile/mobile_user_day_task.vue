@@ -114,8 +114,6 @@
       ...mapGetters(['userDayTask', 'user', 'datePickerOptionsDay']),
       dayTask () {
         var data = this.userDayTask
-        console.log('9999990000000000000000000000')
-        console.log(this.userDayTask)
         var keys = Object.keys(data)
         for (var m = 0, len0 = keys.length; m < len0; m++) {
           var timeType = keys[m]

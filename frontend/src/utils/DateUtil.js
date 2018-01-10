@@ -1,6 +1,7 @@
 /**
  * Created by HOZ on 30/08/2017.
  */
+import Moment from 'moment'
 function _DateUtil () {
 }
 
@@ -62,7 +63,8 @@ _DateUtil.prototype.getStartofMonthofTheDay = function (datetime) {
   return startOfTheday - 3600 * 24 * (datetime.getDate() - 1)
 }
 _DateUtil.prototype.getDatetimeSeconds = function (datetime) {
-  let date = new Date(datetime)
+  let date = Moment(datetime).toDate()
+  console.log(date)
   let miliseconds = date.getMilliseconds()
   return (date.getTime() - miliseconds) / 1000
 }

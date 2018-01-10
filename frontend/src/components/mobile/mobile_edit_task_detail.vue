@@ -13,10 +13,13 @@
                    disabled>
     </mu-text-field>
     <br/>
-    <mu-text-field label="未完成原因" :disabled="user._id !== task.userid" v-model="task.comment" :hintText="commentHint" multiLine :rows="2" :rowsMax="4">
-    </mu-text-field>
+    <mu-select-field v-model="task.finish_status" label="任务状态" :disabled="task.userid !== user._id" @change="handleTaskStatusChange">
+      <mu-menu-item :value="TASK_STATUS_INPROCESS"   :title="TASK_STATUS.get(TASK_STATUS_INPROCESS)"/>
+      <mu-menu-item :value="TASK_STATUS_UNFINISHED"   :title="TASK_STATUS.get(TASK_STATUS_UNFINISHED)"/>
+      <mu-menu-item :value="TASK_STATUS_FINISHED"   v-show="task.finish_status === TASK_STATUS_FINISHED" :title="TASK_STATUS.get(TASK_STATUS_FINISHED)"/>
+    </mu-select-field>
     <br/>
-    <mu-text-field label="完成状态" v-model="task.finish_status_display" disabled>
+    <mu-text-field label="未完成原因" v-show="task.finish_status === TASK_STATUS_UNFINISHED" :disabled="user._id !== task.userid" v-model="task.comment" :hintText="commentHint" multiLine :rows="2" :rowsMax="4">
     </mu-text-field>
     <br/>
     <mu-select-field v-model="task.approve_status" v-show="showApprove && !(user._id === task.userid)" label="工作审批" hintText="待审批" :disabled="this.task.userid === this.user._id">
@@ -26,7 +29,7 @@
     <br/>
     <div>
       <mu-raised-button style="display: inline-block" @click="cancelEdit" label="取消" class="raised-button" />
-      <mu-raised-button style="display: inline-block" @click="commitEdit" :label="task.realendtime !== 0 ? '提交':'完成'" class="raised-button" backgroundColor="green"/>
+      <mu-raised-button style="display: inline-block" @click="commitEdit" :label="task.finish_status === TASK_STATUS_INPROCESS ? '完成':'提交'" class="raised-button" backgroundColor="green"/>
     </div>
     <div v-show="isCommitting">
       <div class="v-modal" tabindex="0" style="z-index: 2019; width: 100%; height: 100%"></div>
@@ -39,6 +42,7 @@
 <script>
   import {mapActions, mapGetters} from 'vuex'
   import {CHANGE_APP_TITLE, COMMIT_TASK_EXEC_INFO} from '../../store/mutation_types'
+  import {TASK_STATUS_INPROCESS, TASK_STATUS_UNFINISHED, TASK_STATUS_FINISHED, TASK_STATUS} from '../../store/common_defs'
   import dateUtil from '../../utils/DateUtil'
   import util from '../../store/utils'
   export default {
@@ -47,6 +51,8 @@
     methods: {
       tableRowClassName (row, index) {
         return ''
+      },
+      handleTaskStatusChange (value) {
       },
       commitEdit () {
         this.isCommitting = true
@@ -66,17 +72,17 @@
         taskFinishInfo.taskid = this.task.taskid
         taskFinishInfo.userid = this.task.userid
         taskFinishInfo.startofday = this.task.startofday
-        if (this.task.realendtime === 0) {
-          var finishTime = dateUtil.getNow()
-          taskFinishInfo.realendtime = finishTime
-        } else {
-          taskFinishInfo.realendtime = this.task.realendtime
-        }
         taskFinishInfo.comment = this.task.comment
         taskFinishInfo.approve_status = this.task.approve_status
         taskFinishInfo.approve_user = this.task.approve_user
         taskFinishInfo.locationLat = lat
         taskFinishInfo.locationLng = lng
+        if (this.task.realendtime !== 0) {
+          taskFinishInfo.finish_status = this.task.finish_status
+        }
+        taskFinishInfo.starttime = this.task.starttime
+        taskFinishInfo.endtime = this.task.endtime
+        taskFinishInfo.timeType = this.task.timeType
         console.log(taskFinishInfo)
         this.COMMIT_TASK_EXEC_INFO(taskFinishInfo)
         this.isCommitting = false
@@ -114,6 +120,18 @@
         } else {
           return '填写未完成原因'
         }
+      },
+      TASK_STATUS_INPROCESS () {
+        return TASK_STATUS_INPROCESS
+      },
+      TASK_STATUS_UNFINISHED () {
+        return TASK_STATUS_UNFINISHED
+      },
+      TASK_STATUS_FINISHED () {
+        return TASK_STATUS_FINISHED
+      },
+      TASK_STATUS () {
+        return TASK_STATUS
       }
     },
     created: function () {

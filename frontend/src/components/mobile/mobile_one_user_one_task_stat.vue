@@ -39,7 +39,8 @@
   import {
     TASK_STATUS_UNFINISHED,
     TASK_STATUS_DELAYED,
-    TASK_STATUS
+    TASK_STATUS,
+    DUTY_TIME_TYPE_SPECIFIC
   } from '../../store/common_defs'
   import Util from '../../store/utils'
   import dateUtil from '../../utils/DateUtil'
@@ -64,6 +65,7 @@
         var params = {}
         params.userid = this.userid
         params.taskid = this.taskid
+        console.log('888888888888888888888888')
         if (typeof this.startofday === 'string') {
           params.startofday = parseInt(this.startofday)
         } else {
@@ -86,10 +88,14 @@
         var data = []
         for (var i = 0, len = this.taskExecDaterangeData.length; i < len; i++) {
           var item = this.taskExecDaterangeData[i]
-          item.executetime = Moment(item.starttime * 1000).format('h:mm') + ' 到 ' + Moment(item.endtime * 1000).format('h:mm')
-          item.realendtimeDisplay = item.realendtime === 0 ? '' : Moment(item.realendtime * 1000).format('M月D日 hh:mm')
+          if (item.timeType === DUTY_TIME_TYPE_SPECIFIC) {
+            item.executetime = Moment(item.starttime * 1000).format('YY年M月D日') + ' 到 ' + Moment(item.endtime * 1000).format('YY年M月D日')
+          } else {
+            item.executetime = Moment(item.starttime * 1000).format('H:mm') + ' 到 ' + Moment(item.endtime * 1000).format('H:mm')
+          }
+          item.realendtimeDisplay = item.realendtime === 0 ? '' : Moment(item.realendtime * 1000).format('M月D日 H:mm')
           item.finish_status_display = TASK_STATUS.get(item.finish_status)
-          item.startofdayDisplay = Moment(item.startofday * 1000).format('M月D日')
+          item.startofdayDisplay = item.timeType === DUTY_TIME_TYPE_SPECIFIC ? item.executetime : Moment(item.startofday * 1000).format('M月D日')
           item.taskname = this.taskName
           item.taskid = this.taskid
           item.userid = this.userid
@@ -112,8 +118,6 @@
       console.log(to)
       next(vm => {
         vm.CHANGE_APP_TITLE('用户任务[' + vm.taskName + ']完成情况统计')
-        console.log(vm.$route)
-        console.log('one user one task get data!!!')
         vm.getData()
       })
     },

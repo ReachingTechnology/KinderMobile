@@ -11,7 +11,7 @@ import { CHANGE_APP_TITLE, SET_ACTIVE_MENU, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL
   GET_ALL_DUTY, UPSERT_DUTY, REMOVE_DUTIES, GET_ALL_DUTY_CATEGORY, UPSERT_DUTY_CATEGORY, REMOVE_DUTY_CATEGORIES,
   GET_ALL_USER_LOCATION, UPSERT_USER_LOCATION,
   GET_ALL_INFORM, GET_DUTY_NOTIFICATION_BY_USER, GET_INFORM_BY_USER, UPSERT_INFORM, REMOVE_INFORMS, GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT,
-  SET_ROOT_VIEW } from './mutation_types'
+  SET_ROOT_VIEW, SET_TASK_QUERY_DATE } from './mutation_types'
 // import dateUtil from '../utils/DateUtil'
 import state from './state'
 import dateUtil from '../utils/DateUtil'
@@ -503,7 +503,10 @@ const actions = {
    Layout
    */
   [ SET_ROOT_VIEW ]: function (store, param) {
-    store.state.isRootView = param
+    store.commit('SET_ROOT_VIEW', param)
+  },
+  [ SET_TASK_QUERY_DATE ]: function (store, param) {
+    store.commit('SET_TASK_QUERY_DATE', param)
   }
 }
 

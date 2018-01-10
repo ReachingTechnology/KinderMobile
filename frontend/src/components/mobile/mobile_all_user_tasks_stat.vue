@@ -30,7 +30,7 @@
 </style>
 <script>
   import { mapActions, mapGetters } from 'vuex'
-  import { CHANGE_APP_TITLE, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, GET_USER_TASK_EXEC_DATA_BY_DATERANGE, SET_ROOT_VIEW } from '../../store/mutation_types'
+  import { CHANGE_APP_TITLE, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, GET_USER_TASK_EXEC_DATA_BY_DATERANGE, SET_ROOT_VIEW, SET_TASK_QUERY_DATE } from '../../store/mutation_types'
   import dateUtil from '../../utils/DateUtil'
   import Moment from 'moment'
 
@@ -55,15 +55,16 @@
         var param = {}
         param.starttime = dateUtil.getDatetimeSeconds(this.startQueryDate)
         param.endtime = dateUtil.getDatetimeSeconds(this.endQueryDate)
+        this.SET_TASK_QUERY_DATE([this.startQueryDate, this.endQueryDate])
         this.GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE(param)
       },
       showEditOver () {
         this.showEdit = false
       },
-      ...mapActions([CHANGE_APP_TITLE, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, GET_USER_TASK_EXEC_DATA_BY_DATERANGE, SET_ROOT_VIEW])
+      ...mapActions([CHANGE_APP_TITLE, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, GET_USER_TASK_EXEC_DATA_BY_DATERANGE, SET_ROOT_VIEW, SET_TASK_QUERY_DATE])
     },
     computed: {
-      ...mapGetters(['all_statistic_data', 'allUser', 'user'])
+      ...mapGetters(['all_statistic_data', 'allUser', 'user', 'taskQueryDate'])
     },
     beforeRouteEnter: function (to, from, next) {
       next(vm => {
@@ -75,13 +76,23 @@
       this.SET_ROOT_VIEW(false)
       next()
     },
+    created: function () {
+      console.log('&&&&&&&&&&&&&&&&&&&&&&!!!')
+      if (this.taskQueryDate.length === 0) {
+        this.startQueryDate = Moment(dateUtil.getStartofThisMonth() * 1000).format('YYYY-MM-DD')
+        this.endQueryDate = Moment().format('YYYY-MM-DD')
+      } else {
+        this.startQueryDate = this.taskQueryDate[0]
+        this.endQueryDate = this.taskQueryDate[1]
+      }
+    },
     props: ['datePickerOption'],
     data: () => {
       return {
         showEdit: false,
         selectedDay: new Date(),
-        startQueryDate: Moment(dateUtil.getStartofThisMonth() * 1000).format('YYYY-MM-DD'),
-        endQueryDate: Moment().format('YYYY-MM-DD'),
+        startQueryDate: '',
+        endQueryDate: '',
         queryUser: this.user,
         datetime_type: 'month'
       }

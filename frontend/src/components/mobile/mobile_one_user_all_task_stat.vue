@@ -70,9 +70,6 @@
       ...mapGetters(['userDaterangeTask', 'user', 'datePickerOptionsDay', 'appTitle']),
       time_range () {
         return Moment(this.startofday * 1000).format('M月D日') + '到' + Moment(this.endofday * 1000).format('M月D日')
-      },
-      queryUser () {
-        return Util.getUserName(this.userid)
       }
     },
     beforeRouteLeave: function (to, from, next) {
@@ -82,6 +79,7 @@
     beforeRouteEnter: function (to, from, next) {
       next(vm => {
         vm.CHANGE_APP_TITLE('用户任务统计')
+        vm.queryUser = Util.getUserName(vm.userid)
         vm.getData()
       })
     },
@@ -92,7 +90,8 @@
         startofday: this.$route.params.startofday,
         endofday: this.$route.params.endofday,
         selectedTask: {},
-        showEdit: false
+        showEdit: false,
+        queryUser: ''
       }
     },
     components: {
