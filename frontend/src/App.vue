@@ -8,7 +8,7 @@
     </div>
     <div class="content">
       <div class="body">
-        <mobile-user-login v-show="user._id == ''"></mobile-user-login>
+        <mobile-user-login v-show="!authenticated"></mobile-user-login>
         <!--<mobile-user-day-task v-show="user.id != '' && selectedTab == 'today_task'"></mobile-user-day-task>-->
         <transition name="slide">
           <router-view v-show="user._id != ''"></router-view>
@@ -26,7 +26,7 @@
               <mu-icon value="email"/>
             </mu-badge>
           </mu-bottom-nav-item>
-          <mu-bottom-nav-item value="notification" v-show="totalNewNotification > 0" v-show="totalNewNotification <= 0" title="消息通知" icon="email">
+          <mu-bottom-nav-item value="notification" v-show="totalNewNotification <= 0" title="消息通知" icon="email"/>
           <!--<button class="mu-buttom-item" type="button" tabindex="0" style="user-select: none; outline: none; cursor: pointer; -webkit-appearance: none;">-->
             <!--<div class="mu-buttom-item-wrapper">-->
               <!--<div class="mu-ripple-wrapper"></div>-->
@@ -66,7 +66,7 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import { GET_ALL_USER_ACCOUNT, GET_ALL_ROLE, GET_ALL_DUTY, GET_ALL_PERMISSION, GET_ALL_PERMISSION_ROLE, GET_ALL_USER_TASK_EXEC_DATA, USER_LOGOUT, GET_NEW_INFORM_COUNT, GET_NEW_DUTY_NOTIFICATION_COUNT } from './store/mutation_types'
+  import { GET_CURRENT_USER, GET_ALL_USER_ACCOUNT, GET_ALL_ROLE, GET_ALL_DUTY, GET_ALL_PERMISSION, GET_ALL_PERMISSION_ROLE, GET_ALL_USER_TASK_EXEC_DATA, USER_LOGOUT, GET_NEW_INFORM_COUNT, GET_NEW_DUTY_NOTIFICATION_COUNT } from './store/mutation_types'
   import MobileUserLogin from './components/mobile/mobile_user_login.vue'
   import MobileUserDayTask from './components/mobile/mobile_user_day_task.vue'
   import notificationUtil from './utils/NotificationUtil'
@@ -77,7 +77,7 @@
       MobileUserLogin, MobileUserDayTask
     },
     computed: {
-      ...mapGetters(['datePickerOptionsDay', 'datePickerOptionsMonth', 'user', 'appTitle', 'totalNewNotification', 'isRootView'])
+      ...mapGetters(['authenticated', 'datePickerOptionsDay', 'datePickerOptionsMonth', 'user', 'appTitle', 'totalNewNotification', 'isRootView'])
     },
     created: function () {
 //      this.user._id = '000001'
@@ -127,7 +127,7 @@
       }
     },
     methods: {
-      ...mapActions([GET_ALL_USER_ACCOUNT, GET_ALL_ROLE, GET_ALL_DUTY, GET_ALL_PERMISSION, GET_ALL_PERMISSION_ROLE, GET_ALL_USER_TASK_EXEC_DATA, USER_LOGOUT, GET_NEW_INFORM_COUNT, GET_NEW_DUTY_NOTIFICATION_COUNT]),
+      ...mapActions([GET_CURRENT_USER, GET_ALL_USER_ACCOUNT, GET_ALL_ROLE, GET_ALL_DUTY, GET_ALL_PERMISSION, GET_ALL_PERMISSION_ROLE, GET_ALL_USER_TASK_EXEC_DATA, USER_LOGOUT, GET_NEW_INFORM_COUNT, GET_NEW_DUTY_NOTIFICATION_COUNT]),
       handleTabChange: function (id) {
         this.selectedTab = id
         if (id === 'today_task') {
@@ -219,9 +219,6 @@
     height:20px;
   }
 
-  .mu-bottom-item-icon:after{
-    content: '<em class="mu-badge mu-badge-circle mu-badge-secondary mu-badge-float"> 1 </em>'
-  }
   /*.bottom_bar_title {*/
   /*color: white;*/
   /*}*/

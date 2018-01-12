@@ -8,7 +8,7 @@ _BackgroundModeUtil.prototype.plugin = undefined
 _BackgroundModeUtil.prototype.initialize = function () {
   // var silentBtn = document.getElementById('silent'),
   // var modeBtn = document.getElementById('mode')
-  this.plugin.setDefaults({ color: 'F14F4D' })
+  this.plugin.setDefaults({ title: '幼儿园安保系统', text: '应用正在后台运行', icon: 'icon', color: 'F14F4D' })
   // this.plugin.overrideBackButton()
 
   this.plugin.on('activate', this.onModeActivated)

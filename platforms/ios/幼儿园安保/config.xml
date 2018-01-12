@@ -57,11 +57,11 @@
     <feature name="AppPreferences">
         <param name="ios-package" value="AppPreferences" />
     </feature>
-    <feature name="CookieMaster">
-        <param name="ios-package" value="CDVCookieMaster" />
-    </feature>
     <feature name="LocalNotification">
         <param name="ios-package" onload="true" value="APPLocalNotification" />
         <param name="onload" value="true" />
+    </feature>
+    <feature name="CookieEmperor">
+        <param name="ios-package" value="CDVCookieEmperor" />
     </feature>
 </widget>

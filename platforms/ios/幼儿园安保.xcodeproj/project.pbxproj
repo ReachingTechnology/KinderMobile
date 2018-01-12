@@ -24,13 +24,13 @@
 		136317E0A3364441AF47FA0F /* CDVLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A34E0589F0E4496AAC10EF9 /* CDVLocation.m */; };
 		C738714B7B954274B8D9DB33 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5581FE092D0945C28800F588 /* CoreLocation.framework */; };
 		BE75A57C10634C8483365B3E /* AppPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 6099846F548F41DBB811E22E /* AppPreferences.m */; };
-		1FE1A38CC6294ABC820A6593 /* CDVCookieMaster.m in Sources */ = {isa = PBXBuildFile; fileRef = 99C8CF42E3CF420BBE74CF04 /* CDVCookieMaster.m */; };
 		88D8B52376A04F52AE7226E0 /* AppDelegate+APPAppEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 59189193309F4D0BB2739B17 /* AppDelegate+APPAppEvent.m */; };
 		AA4A1C4925A54E97A60ABB94 /* CDVPlugin+APPAppEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = DAB072BA60B74D0687A70894 /* CDVPlugin+APPAppEvent.m */; };
 		182CC184C4384DFD91A49701 /* APPLocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E7D86B02BA42799FD02FAC /* APPLocalNotification.m */; };
 		D6E2306C7D5448259330411D /* APPLocalNotificationOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 43B54BE7E0194770923E0F19 /* APPLocalNotificationOptions.m */; };
 		0256ACE107C74EBD84CBE058 /* UIApplication+APPLocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B02B3EC6EB041C8AE9A59DF /* UIApplication+APPLocalNotification.m */; };
 		BF9780A4EBBC43D0812AE861 /* UILocalNotification+APPLocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = FF2DAA398E3E4E59AA9E5D4C /* UILocalNotification+APPLocalNotification.m */; };
+		6B1F087ADC2248DEB0488893 /* CDVCookieEmperor.m in Sources */ = {isa = PBXBuildFile; fileRef = 6ED7753156FF4A0290FC09EE /* CDVCookieEmperor.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,8 +84,6 @@
 		5581FE092D0945C28800F588 /* CoreLocation.framework */ = {isa = PBXFileReference; name = "CoreLocation.framework"; path = "System/Library/Frameworks/CoreLocation.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 		6099846F548F41DBB811E22E /* AppPreferences.m */ = {isa = PBXFileReference; name = "AppPreferences.m"; path = "cordova-plugin-app-preferences/AppPreferences.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
 		32E27315E5554BC4A84187C2 /* AppPreferences.h */ = {isa = PBXFileReference; name = "AppPreferences.h"; path = "cordova-plugin-app-preferences/AppPreferences.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
-		99C8CF42E3CF420BBE74CF04 /* CDVCookieMaster.m */ = {isa = PBXFileReference; name = "CDVCookieMaster.m"; path = "com.cordova.plugins.cookiemaster/CDVCookieMaster.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
-		D2C59B595AE34A57996147A3 /* CDVCookieMaster.h */ = {isa = PBXFileReference; name = "CDVCookieMaster.h"; path = "com.cordova.plugins.cookiemaster/CDVCookieMaster.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 		59189193309F4D0BB2739B17 /* AppDelegate+APPAppEvent.m */ = {isa = PBXFileReference; name = "AppDelegate+APPAppEvent.m"; path = "cordova-plugin-app-event/AppDelegate+APPAppEvent.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
 		DAB072BA60B74D0687A70894 /* CDVPlugin+APPAppEvent.m */ = {isa = PBXFileReference; name = "CDVPlugin+APPAppEvent.m"; path = "cordova-plugin-app-event/CDVPlugin+APPAppEvent.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
 		531D799AF181441392B2DD53 /* AppDelegate+APPAppEvent.h */ = {isa = PBXFileReference; name = "AppDelegate+APPAppEvent.h"; path = "cordova-plugin-app-event/AppDelegate+APPAppEvent.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
@@ -99,6 +97,8 @@
 		16D42A5215A3457F93EFB517 /* APPLocalNotificationOptions.h */ = {isa = PBXFileReference; name = "APPLocalNotificationOptions.h"; path = "cordova-plugin-local-notification/APPLocalNotificationOptions.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 		1C93A55D5FCA47B292A8B298 /* UIApplication+APPLocalNotification.h */ = {isa = PBXFileReference; name = "UIApplication+APPLocalNotification.h"; path = "cordova-plugin-local-notification/UIApplication+APPLocalNotification.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 		780F380C9780466DBD230826 /* UILocalNotification+APPLocalNotification.h */ = {isa = PBXFileReference; name = "UILocalNotification+APPLocalNotification.h"; path = "cordova-plugin-local-notification/UILocalNotification+APPLocalNotification.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		6ED7753156FF4A0290FC09EE /* CDVCookieEmperor.m */ = {isa = PBXFileReference; name = "CDVCookieEmperor.m"; path = "cordova-plugin-cookieemperor/CDVCookieEmperor.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		9EE787A05D8F40ED95177669 /* CDVCookieEmperor.h */ = {isa = PBXFileReference; name = "CDVCookieEmperor.h"; path = "cordova-plugin-cookieemperor/CDVCookieEmperor.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,8 +217,6 @@
 				0BA17C9C22A14D4B8C502BFD /* CDVLocation.h */,
 				6099846F548F41DBB811E22E /* AppPreferences.m */,
 				32E27315E5554BC4A84187C2 /* AppPreferences.h */,
-				99C8CF42E3CF420BBE74CF04 /* CDVCookieMaster.m */,
-				D2C59B595AE34A57996147A3 /* CDVCookieMaster.h */,
 				59189193309F4D0BB2739B17 /* AppDelegate+APPAppEvent.m */,
 				DAB072BA60B74D0687A70894 /* CDVPlugin+APPAppEvent.m */,
 				531D799AF181441392B2DD53 /* AppDelegate+APPAppEvent.h */,
@@ -232,6 +230,8 @@
 				16D42A5215A3457F93EFB517 /* APPLocalNotificationOptions.h */,
 				1C93A55D5FCA47B292A8B298 /* UIApplication+APPLocalNotification.h */,
 				780F380C9780466DBD230826 /* UILocalNotification+APPLocalNotification.h */,
+				6ED7753156FF4A0290FC09EE /* CDVCookieEmperor.m */,
+				9EE787A05D8F40ED95177669 /* CDVCookieEmperor.h */,
 			);
 			name = Plugins;
 			path = "幼儿园安保/Plugins";
@@ -350,13 +350,13 @@
 				D564C0265AC74E55B1055D85 /* APPMethodMagic.m in Sources */,
 				136317E0A3364441AF47FA0F /* CDVLocation.m in Sources */,
 				BE75A57C10634C8483365B3E /* AppPreferences.m in Sources */,
-				1FE1A38CC6294ABC820A6593 /* CDVCookieMaster.m in Sources */,
 				88D8B52376A04F52AE7226E0 /* AppDelegate+APPAppEvent.m in Sources */,
 				AA4A1C4925A54E97A60ABB94 /* CDVPlugin+APPAppEvent.m in Sources */,
 				182CC184C4384DFD91A49701 /* APPLocalNotification.m in Sources */,
 				D6E2306C7D5448259330411D /* APPLocalNotificationOptions.m in Sources */,
 				0256ACE107C74EBD84CBE058 /* UIApplication+APPLocalNotification.m in Sources */,
 				BF9780A4EBBC43D0812AE861 /* UILocalNotification+APPLocalNotification.m in Sources */,
+				6B1F087ADC2248DEB0488893 /* CDVCookieEmperor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

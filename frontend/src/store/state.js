@@ -4,6 +4,7 @@
 import dateUtil from '../utils/DateUtil'
 const state = {
   sessionToken: '',
+  authenticated: false,
   // 当前用户
   user: {
     _id: ''
@@ -31,7 +32,7 @@ const state = {
   backend_uri: 'https://47.94.192.237:7070',
   // backend_uri: 'https://127.0.0.1  :7070',
   all_statistic_data: [], // 所有用户的所有任务在一个时间段内执行的情况
-  userDayTask: [], // 用户的所有任务在某一天执行的情况
+  userDayTask: {'DUTY_TIME_TYPE_ROUTINE': [], 'DUTY_TIME_TYPE_PERIODICAL': [], 'DUTY_TIME_TYPE_SPECIFIC': []}, // 用户的所有任务在某一天执行的情况
   userDaterangeTask: [], // 用户的所有任务在一个时间段里执行的情况
   taskExecDaterangeData: [], // 用户的一个任务在一个时间段里执行的情况
   userDayTaskQueryDate: 0,

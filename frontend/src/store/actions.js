@@ -2,7 +2,7 @@
  * Created by HOZ on 28/08/2017.
  */
 import axios from 'axios'
-import { CHANGE_APP_TITLE, SET_ACTIVE_MENU, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, USER_LOGIN, USER_LOGOUT, USER_CHANGE_PASS,
+import { GET_CURRENT_USER, CHANGE_APP_TITLE, SET_ACTIVE_MENU, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, USER_LOGIN, USER_LOGOUT, USER_CHANGE_PASS,
   GET_DUTY_BY_USER, UPSERT_USER_ACCOUNT, GET_ALL_USER_ACCOUNT, REMOVE_USERS,
   GET_ALL_USER_GROUP, UPSERT_USER_GROUP, REMOVE_USER_GROUPS,
   GET_ALL_ROLE, UPSERT_ROLE, REMOVE_ROLES,
@@ -14,8 +14,10 @@ import { CHANGE_APP_TITLE, SET_ACTIVE_MENU, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL
   SET_ROOT_VIEW, SET_TASK_QUERY_DATE } from './mutation_types'
 // import dateUtil from '../utils/DateUtil'
 import state from './state'
+import store from './store'
 import dateUtil from '../utils/DateUtil'
 import {DUTY_TIME_TYPE_ALL} from './common_defs'
+import preferenceUtil from '../utils/PreferenceUtil'
 
 axios.defaults.baseURL = state.backend_uri
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN
@@ -26,11 +28,40 @@ axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest'
 
 function handleError (error) {
   if (error.response.status === 401) {
-    state.user._id = ''
+    var empty_user =  {'_id': '', 'name': ''}
+    store.commit('SET_USER', empty_user)
   }
 }
 
 const actions = {
+  [ GET_CURRENT_USER ]: function (store, param) {
+    preferenceUtil.get('cookie_user', function (value) {
+      console.log('cookie user is:' + value)
+      window.cookieEmperor.setCookie(state.backend_uri, 'user', value, function() {
+        console.log('***************************  set cookie successfully!')
+      }, function(error) {
+        if (error) {
+          console.log('set cookie error: ' + error)
+        }
+      })
+      axios.get('/user/get_current_user')
+        .then(function (response) {
+          console.log('get current user:')
+          console.log(response.data)
+          store.commit('SET_USER', response.data)
+        })
+        .catch(handleError)
+    }, function (error) {
+      console.log("Preference get user cookie error: " + error)
+      axios.get('/user/get_current_user')
+        .then(function (response) {
+          console.log('get current user:')
+          console.log(response.data)
+          store.commit('SET_USER', response.data)
+        })
+        .catch(handleError)
+    })
+  },
   /*
    Login/logout
    */
@@ -39,6 +70,15 @@ const actions = {
       .then(function (response) {
         console.log('user login')
         console.log(response.data)
+        window.cookieEmperor.getCookie(state.backend_uri, 'user', function(data) {
+          console.log('{{{{{{{{{{{{{{{{{{{{{{{')
+          console.log(data.cookieValue)
+          preferenceUtil.save('cookie_user', data.cookieValue)
+        }, function(error) {
+          if (error) {
+            console.log('get cookie error: ' + error)
+          }
+        })
         store.commit('SET_USER', response.data)
       })
       .catch(handleError)
@@ -48,6 +88,12 @@ const actions = {
     data._id = ''
     data.name = ''
     store.commit('SET_USER', data)
+    window.cookieEmperor.clearAll(function() {
+        console.log('Cookies have been cleared');
+      },
+      function() {
+        console.log('Cookies could not be cleared');
+      })
     store.state.isRootView = false
   },
   [ USER_CHANGE_PASS ]: function (store, param) {

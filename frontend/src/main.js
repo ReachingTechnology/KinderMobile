@@ -19,12 +19,14 @@ import preferenceUtil from './utils/PreferenceUtil'
 import locationUtil from './utils/LocationUtil'
 import notificationUtil from './utils/NotificationUtil'
 import backgroundModeUtil from './utils/BackgroundModeUtil'
+import VueCordova from 'vue-cordova'
 
 Vue.use(Element)
 // Vue.use(VueRouter)
 Vue.use(Vuex)
 Vue.use(MuseUI)
 Vue.use(Moment)
+Vue.use(VueCordova)
 // Vue.use(Vuetify)
 
 Vue.config.productionTip = false
@@ -37,13 +39,17 @@ function getUserNotificationPeriodically () {
       store.dispatch('GET_NEW_DUTY_NOTIFICATION_COUNT')
     }
     getUserNotificationPeriodically()
-  }, 30000)
+  }, 60000)
 }
 
 function onBackKeyDown (e) {
   console.log('back button fired!!!!!')
   // e.preventDefault()
-  router.go(-1)
+  if (store.state.isRootView) {
+    backgroundModeUtil.plugin.moveToBackground()
+  } else {
+    router.go(-1)
+  }
   // return false
 }
 
@@ -66,10 +72,11 @@ var app = {
     // app.receivedEvent('deviceready')
     backgroundModeUtil.plugin = cordova.plugins.backgroundMode
     backgroundModeUtil.initialize()
-    preferenceUtil.prefs = cordova.plugins.appPreferences
+    preferenceUtil.prefs = plugins.appPreferences
+    store.dispatch('GET_CURRENT_USER')
     notificationUtil.notification = cordova.plugins.notification.local
     getUserNotificationPeriodically()
-    locationUtil.getLocationPeriodically(30000)
+    locationUtil.getLocationPeriodically(300000)
     document.addEventListener("backbutton", onBackKeyDown, false);
   },
 

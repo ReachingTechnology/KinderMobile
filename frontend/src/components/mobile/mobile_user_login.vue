@@ -17,6 +17,7 @@
 <script>
   import { mapActions } from 'vuex'
   import { USER_LOGIN, CHANGE_APP_TITLE } from '../../store/mutation_types'
+  import Vue from 'vue'
   export default {
     name: 'app',
     components: {

@@ -1,0 +1,55 @@
+{
+  "_from": "git+https://github.com/rtk/cordova-cookie-emperor.git",
+  "_id": "cordova-plugin-cookieemperor@1.0.0",
+  "_inBundle": false,
+  "_integrity": "sha1-Ctgh+gNbD3tN+Ms1LAdDPFiDun4=",
+  "_location": "/cordova-plugin-cookieemperor",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "https://github.com/rtk/cordova-cookie-emperor.git",
+    "rawSpec": "https://github.com/rtk/cordova-cookie-emperor.git",
+    "saveSpec": "git+https://github.com/rtk/cordova-cookie-emperor.git",
+    "fetchSpec": "https://github.com/rtk/cordova-cookie-emperor.git",
+    "gitCommittish": "master"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "git+https://github.com/rtk/cordova-cookie-emperor.git#3a73cfddce512e1a3ad8742163b92de72a0e338a",
+  "_spec": "https://github.com/rtk/cordova-cookie-emperor.git",
+  "_where": "/Users/HOZ/Projects/KinderMobile/node_modules",
+  "author": {
+    "name": "Rouven Kruse"
+  },
+  "bugs": {
+    "url": "https://github.com/RTK/cordova-cookie-emperor/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-plugin-cookieemperor",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "deprecated": false,
+  "description": "Cordova webkit browser cookie manipulation, XWalk solution",
+  "homepage": "https://github.com/RTK/cordova-cookie-emperor#readme",
+  "keywords": [
+    "cordova",
+    "cookies",
+    "cookie",
+    "manipulate",
+    "ecosystem:cordova",
+    "cordova-ios"
+  ],
+  "license": "MIT",
+  "name": "cordova-plugin-cookieemperor",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RTK/cordova-cookie-emperor.git"
+  },
+  "version": "1.0.0"
+}

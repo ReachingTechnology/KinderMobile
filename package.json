@@ -10,13 +10,13 @@
     "author": "Apache Cordova Team",
     "license": "Apache-2.0",
     "dependencies": {
-        "com.cordova.plugins.cookiemaster": "~1.0.0",
         "cordova-android": "^6.2.3",
         "cordova-ios": "^4.4.0",
         "cordova-plugin-app-event": "^1.2.1",
         "cordova-plugin-app-preferences": "^0.99.3",
         "cordova-plugin-background-mode": "^0.7.2",
         "cordova-plugin-compat": "^1.2.0",
+        "cordova-plugin-cookieemperor": "git+https://github.com/rtk/cordova-cookie-emperor.git",
         "cordova-plugin-cookiemaster": "^1.0.5",
         "cordova-plugin-device": "^1.1.7",
         "cordova-plugin-geolocation": "^2.4.3",
@@ -29,8 +29,8 @@
             "cordova-plugin-background-mode": {},
             "cordova-plugin-geolocation": {},
             "cordova-plugin-app-preferences": {},
-            "com.cordova.plugins.cookiemaster": {},
-            "cordova-plugin-local-notification": {}
+            "cordova-plugin-local-notification": {},
+            "cordova-plugin-cookieemperor": {}
         },
         "platforms": [
             "android",

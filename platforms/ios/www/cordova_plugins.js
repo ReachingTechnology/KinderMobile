@@ -58,14 +58,6 @@ module.exports = [
         ]
     },
     {
-        "id": "com.cordova.plugins.cookiemaster.cookieMaster",
-        "file": "plugins/com.cordova.plugins.cookiemaster/www/cookieMaster.js",
-        "pluginId": "com.cordova.plugins.cookiemaster",
-        "clobbers": [
-            "cookieMaster"
-        ]
-    },
-    {
         "id": "cordova-plugin-local-notification.LocalNotification",
         "file": "plugins/cordova-plugin-local-notification/www/local-notification.js",
         "pluginId": "cordova-plugin-local-notification",
@@ -91,6 +83,14 @@ module.exports = [
             "cordova.plugins.notification.local.core",
             "plugin.notification.local.core"
         ]
+    },
+    {
+        "id": "cordova-plugin-cookieemperor.cookieEmperor",
+        "file": "plugins/cordova-plugin-cookieemperor/www/cookieEmperor.js",
+        "pluginId": "cordova-plugin-cookieemperor",
+        "clobbers": [
+            "cookieEmperor"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -102,9 +102,9 @@ module.exports.metadata =
     "cordova-plugin-geolocation": "2.4.3",
     "cordova-plugin-whitelist": "1.3.2",
     "cordova-plugin-app-preferences": "0.99.3",
-    "com.cordova.plugins.cookiemaster": "1.0.0",
     "cordova-plugin-app-event": "1.2.1",
-    "cordova-plugin-local-notification": "0.8.4"
+    "cordova-plugin-local-notification": "0.8.4",
+    "cordova-plugin-cookieemperor": "1.0.0"
 };
 // BOTTOM OF METADATA
 });

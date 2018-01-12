@@ -17,6 +17,11 @@ import dateUtil from '../utils/DateUtil'
 const mutations = {
   SET_USER (state, data) {
     state.user = data
+    if (state.user._id === '') {
+      state.authenticated = false
+    } else {
+      state.authenticated = true
+    }
   },
   SET_ALL_STATISTIC_DATA (state, data) {
     console.log('begin set all unfinished data')

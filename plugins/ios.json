@@ -20,10 +20,10 @@
         "cordova-plugin-app-preferences": {
             "PACKAGE_NAME": "kinder.reachingtech.com"
         },
-        "com.cordova.plugins.cookiemaster": {
+        "cordova-plugin-local-notification": {
             "PACKAGE_NAME": "kinder.reachingtech.com"
         },
-        "cordova-plugin-local-notification": {
+        "cordova-plugin-cookieemperor": {
             "PACKAGE_NAME": "kinder.reachingtech.com"
         }
     },

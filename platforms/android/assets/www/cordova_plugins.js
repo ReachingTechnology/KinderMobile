@@ -1,6 +1,14 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
 module.exports = [
     {
+        "id": "cordova-plugin-app-preferences.apppreferences",
+        "file": "plugins/cordova-plugin-app-preferences/www/apppreferences.js",
+        "pluginId": "cordova-plugin-app-preferences",
+        "clobbers": [
+            "plugins.appPreferences"
+        ]
+    },
+    {
         "id": "cordova-plugin-device.device",
         "file": "plugins/cordova-plugin-device/www/device.js",
         "pluginId": "cordova-plugin-device",
@@ -18,6 +26,14 @@ module.exports = [
         ]
     },
     {
+        "id": "cordova-plugin-cookieemperor.cookieEmperor",
+        "file": "plugins/cordova-plugin-cookieemperor/www/cookieEmperor.js",
+        "pluginId": "cordova-plugin-cookieemperor",
+        "clobbers": [
+            "cookieEmperor"
+        ]
+    },
+    {
         "id": "cordova-plugin-geolocation.geolocation",
         "file": "plugins/cordova-plugin-geolocation/www/android/geolocation.js",
         "pluginId": "cordova-plugin-geolocation",
@@ -30,22 +46,6 @@ module.exports = [
         "file": "plugins/cordova-plugin-geolocation/www/PositionError.js",
         "pluginId": "cordova-plugin-geolocation",
         "runs": true
-    },
-    {
-        "id": "cordova-plugin-app-preferences.apppreferences",
-        "file": "plugins/cordova-plugin-app-preferences/www/apppreferences.js",
-        "pluginId": "cordova-plugin-app-preferences",
-        "clobbers": [
-            "plugins.appPreferences"
-        ]
-    },
-    {
-        "id": "com.cordova.plugins.cookiemaster.cookieMaster",
-        "file": "plugins/com.cordova.plugins.cookiemaster/www/cookieMaster.js",
-        "pluginId": "com.cordova.plugins.cookiemaster",
-        "clobbers": [
-            "cookieMaster"
-        ]
     },
     {
         "id": "cordova-plugin-local-notification.LocalNotification",
@@ -78,15 +78,15 @@ module.exports = [
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "cordova-plugin-whitelist": "1.3.2",
+    "cordova-plugin-app-event": "1.2.1",
+    "cordova-plugin-app-preferences": "0.99.3",
     "cordova-plugin-device": "1.1.7",
     "cordova-plugin-background-mode": "0.7.2",
     "cordova-plugin-compat": "1.2.0",
+    "cordova-plugin-cookieemperor": "1.0.0",
     "cordova-plugin-geolocation": "2.4.3",
-    "cordova-plugin-app-preferences": "0.99.3",
-    "com.cordova.plugins.cookiemaster": "1.0.0",
-    "cordova-plugin-app-event": "1.2.1",
-    "cordova-plugin-local-notification": "0.8.4"
+    "cordova-plugin-local-notification": "0.8.4",
+    "cordova-plugin-whitelist": "1.3.2"
 };
 // BOTTOM OF METADATA
 });

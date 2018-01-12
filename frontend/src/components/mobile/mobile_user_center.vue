@@ -2,6 +2,14 @@
   <div align="center">
     <br/>
     <mu-avatar slot="center" icon="person" :size="100"></mu-avatar>
+    <!--<el-upload-->
+      <!--class="avatar-uploader"-->
+      <!--action="https://47.94.192.237:7070/util/uploadimage"-->
+      <!--:show-file-list="false"-->
+      <!--:on-success="handleAvatarSuccess">-->
+      <!--<img v-if="currentUser.avatarUrl" :src="currentUser.avatarUrl" class="avatar">-->
+      <!--<i v-else class="el-icon-plus"></i>-->
+    <!--</el-upload>-->
     <br/>
     <mu-text-field :disabled="true" label="编号" v-model="currentUser._id" labelFloat/>
     <br/>
@@ -23,7 +31,7 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import { USER_LOGOUT, CHANGE_APP_TITLE, SET_ROOT_VIEW } from '../../store/mutation_types'
+  import { USER_LOGOUT, GET_CURRENT_USER, CHANGE_APP_TITLE, SET_ROOT_VIEW } from '../../store/mutation_types'
   import ObjUtil from '../../utils/ObjUtil'
   import Util from '../../store/utils'
 
@@ -32,11 +40,12 @@
     components: {
     },
     computed: {
-      ...mapGetters(['user']),
+      ...mapGetters(['user', 'backend_uri']),
       currentUser () {
         var data = {}
         data = ObjUtil.clone(this.user)
         data.roleName = Util.getRoleNames(this.user.role)
+        data.avatarUrl = this.user.avatarUrl
         return data
       }
     },
@@ -70,10 +79,48 @@
       handleChgPass () {
 
       },
-      ...mapActions([CHANGE_APP_TITLE, USER_LOGOUT, SET_ROOT_VIEW])
+      handleAvatarSuccess (res, file) {
+        this.currentUser.avatarUrl = URL.createObjectURL(file.raw)
+        this.GET_CURRENT_USER()
+      },
+//      beforeAvatarUpload (file) {
+//        const isJPG = file.type === 'image/jpeg'
+//        const isLt2M = file.size / 1024 / 1024 < 2
+//
+//        if (!isJPG) {
+//          this.$message.error('Avatar picture must be JPG format!')
+//        }
+//        if (!isLt2M) {
+//          this.$message.error('Avatar picture size can not exceed 2MB!')
+//        }
+//        return isJPG && isLt2M
+//      },
+      ...mapActions([GET_CURRENT_USER, CHANGE_APP_TITLE, USER_LOGOUT, SET_ROOT_VIEW])
     }
   }
 </script>
 <style scoped>
-
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>

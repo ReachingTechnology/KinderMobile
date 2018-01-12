@@ -4,6 +4,7 @@
 const getters = {
   appTitle: state => { return state.appTitle },
   active_menu: state => { return state.active_menu },
+  authenticated: state => { return state.authenticated},
   sessionToken: state => { return state.sessionToken },
   user: state => { return state.user },
   backend_uri: state => { return state.backend_uri },

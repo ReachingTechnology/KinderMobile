@@ -7,33 +7,33 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
-        "cordova-plugin-background-mode": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
-        "cordova-plugin-geolocation": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
         "cordova-plugin-app-preferences": {
             "PACKAGE_NAME": "kinder.reachingtech.com"
         },
-        "com.cordova.plugins.cookiemaster": {
+        "cordova-plugin-background-mode": {
+            "PACKAGE_NAME": "kinder.reachingtech.com"
+        },
+        "cordova-plugin-cookieemperor": {
+            "PACKAGE_NAME": "kinder.reachingtech.com"
+        },
+        "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "kinder.reachingtech.com"
         },
         "cordova-plugin-local-notification": {
             "PACKAGE_NAME": "kinder.reachingtech.com"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "kinder.reachingtech.com"
         }
     },
     "dependent_plugins": {
+        "cordova-plugin-app-event": {
+            "PACKAGE_NAME": "kinder.reachingtech.com"
+        },
         "cordova-plugin-device": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "kinder.reachingtech.com"
         },
         "cordova-plugin-compat": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
-        "cordova-plugin-app-event": {
             "PACKAGE_NAME": "kinder.reachingtech.com"
         }
     }
