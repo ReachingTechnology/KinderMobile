@@ -65,7 +65,6 @@
         var params = {}
         params.userid = this.userid
         params.taskid = this.taskid
-        console.log('888888888888888888888888')
         if (typeof this.startofday === 'string') {
           params.startofday = parseInt(this.startofday)
         } else {
@@ -95,6 +94,11 @@
           }
           item.realendtimeDisplay = item.realendtime === 0 ? '' : Moment(item.realendtime * 1000).format('M月D日 H:mm')
           item.finish_status_display = TASK_STATUS.get(item.finish_status)
+          if (item.approve_status === '0') {
+            item.finish_status_display = "个人原因未完成"
+          } else if (item.approve_status === '1') {
+            item.finish_status_display = "工作安排未完成"
+          }
           item.startofdayDisplay = item.timeType === DUTY_TIME_TYPE_SPECIFIC ? item.executetime : Moment(item.startofday * 1000).format('M月D日')
           item.taskname = this.taskName
           item.taskid = this.taskid

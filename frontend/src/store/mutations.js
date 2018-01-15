@@ -32,6 +32,7 @@ const mutations = {
       item.username = data[i].username
       item.role = data[i].role
       item.unfinish_count = data[i].unfinish_count
+      item.approved_count = data[i].approved_count
       console.log('insert: ' + item)
       state.all_statistic_data.push(item)
     }

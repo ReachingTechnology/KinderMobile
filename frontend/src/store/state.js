@@ -94,6 +94,7 @@ const state = {
   },
   changePassFail: false,
   isRootView: false,
-  taskQueryDate: []
+  taskQueryDate: [],
+  dayTaskCollapse: {'DUTY_TIME_TYPE_ROUTINE': false, 'DUTY_TIME_TYPE_PERIODICAL': false, 'DUTY_TIME_TYPE_SPECIFIC': false}
 }
 export default state

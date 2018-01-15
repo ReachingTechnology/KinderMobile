@@ -13,7 +13,7 @@
       </mu-list>
       <mu-divider shallowInset/>
       <mu-list @itemClick="itemClicked">
-          <mu-list-item  v-for="item in userDaterangeTask" :title="item.taskname" :describeText="item.role" :value="item" :afterText="'未完成项数: ' + item.unfinish_count">
+          <mu-list-item  v-for="item in userDaterangeTask" :title="item.taskname" :describeText="item.role" :value="item" :afterText="'未完成项数:' + item.unfinish_count + '/' + item.approved_count">
             <mu-avatar icon="work" slot="leftAvatar"/>
             <mu-icon value="chevron_right" slot="right"/>
           </mu-list-item>

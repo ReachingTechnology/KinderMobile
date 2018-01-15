@@ -22,7 +22,7 @@
     <mu-text-field label="未完成原因" v-show="task.finish_status === TASK_STATUS_UNFINISHED" :disabled="user._id !== task.userid" v-model="task.comment" :hintText="commentHint" multiLine :rows="2" :rowsMax="4">
     </mu-text-field>
     <br/>
-    <mu-select-field v-model="task.approve_status" v-show="showApprove && !(user._id === task.userid)" label="工作审批" hintText="待审批" :disabled="this.task.userid === this.user._id">
+    <mu-select-field v-model="task.approve_status" v-show="showApprove" label="工作审批" hintText="待审批" :disabled="this.task.userid === this.user._id">
       <mu-menu-item value=0   title="个人原因"/>
       <mu-menu-item value=1   title="工作安排"/>
     </mu-select-field>
@@ -77,9 +77,8 @@
         taskFinishInfo.approve_user = this.task.approve_user
         taskFinishInfo.locationLat = lat
         taskFinishInfo.locationLng = lng
-        if (this.task.realendtime !== 0) {
-          taskFinishInfo.finish_status = this.task.finish_status
-        }
+        taskFinishInfo.finish_status = this.task.finish_status
+
         taskFinishInfo.starttime = this.task.starttime
         taskFinishInfo.endtime = this.task.endtime
         taskFinishInfo.timeType = this.task.timeType
