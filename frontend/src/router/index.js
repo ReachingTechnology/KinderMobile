@@ -13,6 +13,7 @@ import MobileUserMessageCenter from '../components/mobile/mobile_user_message_ce
 import MobileUserDutyNotificationList from '../components/mobile/mobile_user_duty_notification_list.vue'
 import MobileUserInformList from '../components/mobile/mobile_user_inform_list.vue'
 import MobileUserLogin from '../components/mobile/mobile_user_login.vue'
+import ChangePassword from '../components/mobile/mobile_change_pass.vue'
 
 Vue.use(Router)
 Vue.use(Vuex)
@@ -23,6 +24,14 @@ const router = new Router({
       path: '/userLogin',
       name: 'userLogin',
       component: MobileUserLogin,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/changePass',
+      name: 'changePass',
+      component: ChangePassword,
       meta: {
         keepAlive: true
       }

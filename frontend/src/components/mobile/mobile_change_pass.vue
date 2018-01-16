@@ -1,56 +1,70 @@
 <template>
-  <div style="width: 50%; margin: auto">
-    <el-form :model="formData" :label-width="formLabelWidth" :label-position="labelPosition" ref="ruleForm"
-             :rules="rules">
-      <el-form-item label="旧密码" prop="old_pass">
-        <el-input v-model="formData.old_pass" type="password" auto-complete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="新密码" prop="new_pass">
-        <el-input v-model="formData.pass" type="password" auto-complete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="再次输入新密码">
-        <el-input v-model="formData.checkPass" type="password" auto-complete="off"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-      <!--<el-button @click="cancelEdit">取消</el-button>-->
-      <el-button type="primary" @click="commitEdit">提交</el-button>
-    </span>
+  <div align="center">
+    <mu-text-field label="旧密码" v-model="old_pass" type="password" labelFloat :errorText="oldPassError"/>
+    <br/>
+    <mu-text-field label="新密码" v-model="pass" type="password" labelFloat/>
+    <br/>
+    <mu-text-field label="再次输入新密码" v-model="check_pass" type="password" labelFloat :errorText="checkPassError" @blur="checkPass"/>
+    <br/>
+    <div>
+      <mu-raised-button style="display: inline-block" @click="cancelChange" label="取消" class="raised-button" />
+      <mu-raised-button style="display: inline-block" @click="commitChange" label="更改" class="raised-button" backgroundColor="green"/>
+    </div>
   </div>
 </template>
 <script>
   import {mapActions, mapGetters} from 'vuex'
-  import {USER_CHANGE_PASS, CHANGE_APP_TITLE} from '../store/mutation_types'
+  import {USER_CHANGE_PASS, CHANGE_APP_TITLE} from '../../store/mutation_types'
 
   export default {
     components: {},
     name: 'change_password_panel',
     methods: {
-      commitEdit () {
-        this.$refs['ruleForm'].validate((valid) => {
-          if (valid) {
-            this.formData.user_id = this.user._id
-            this.USER_CHANGE_PASS(this.formData)
-          }
-        })
+      commitChange () {
+        if (this.checkPass()) {
+          var param = {}
+          param.userid = this.user._id
+          param.pass = this.pass
+          param.oldpass = this.old_pass
+          this.USER_CHANGE_PASS(param)
+        }
+      },
+      resetFields () {
+        this.pass = ''
+        this.old_pass = ''
+        this.check_pass = ''
+      },
+      cancelChange () {
+        this.resetFields()
+        this.$router.go(-1)
+      },
+      checkPass () {
+        if (this.pass !== this.check_pass) {
+          this.checkPassError = '输入密码不一致'
+          return false
+        } else {
+          this.checkPassError = ''
+          return true
+        }
       },
       ...mapActions([USER_CHANGE_PASS, CHANGE_APP_TITLE])
     },
     computed: {
-      ...mapGetters(['user', 'changePassFail'])
+      ...mapGetters(['user', 'changePassStatus'])
     },
     beforeRouteEnter: function (to, from, next) {
       next(vm => { vm.CHANGE_APP_TITLE('更改密码') })
     },
     watch: {
-      changePassFail: function (val, oldVal) {
-        if (val && !oldVal) {
-          alert('更新密码失败，请确认旧密码是否正确！')
-          this.$refs['ruleForm'].resetFields()
-        }
-        if (!val && oldVal) {
-          this.$refs['ruleForm'].resetFields()
+      changePassStatus: function (val, oldVal) {
+        if (val === 0) {
+          alert('更新密码成功')
+          this.resetFields()
           this.$router.go(-1)
+        }
+        if (val === -1) {
+          this.resetFields()
+          alert('更新密码失败，请确认旧密码是否正确！')
         }
       }
     },
@@ -58,37 +72,11 @@
     created: function () {
     },
     data: function () {
-      var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'))
-        } else {
-          if (this.ruleForm2.checkPass !== '') {
-            this.$refs.ruleForm2.validateField('checkPass')
-          }
-          callback()
-        }
-      }
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'))
-        } else if (value !== this.data.pass) {
-          callback(new Error('两次输入密码不一致!'))
-        } else {
-          callback()
-        }
-      };
       return {
-        formLabelWidth: '120px',
-        labelPosition: 'right',
-        formData: {user_id: '', old_pass: '', pass: '', checkPass: ''},
-        rules: {
-          pass: [
-            { validator: validatePass, trigger: 'blur' }
-          ],
-          checkPass: [
-            { validator: validatePass2, trigger: 'blur' }
-          ]
-        }
+        old_pass: '',
+        pass: '',
+        check_pass: '',
+        checkPassError: ''
       }
     }
   }

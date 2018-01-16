@@ -18,7 +18,7 @@
     <mu-text-field :disabled="true" label="岗位" v-model="currentUser.roleName" labelFloat/>
     <br/>
     <div>
-      <!--<mu-raised-button style="display:inline-block" size="normal" label="修改密码" @click.native="handleChgPass" primary/>-->
+      <mu-raised-button style="display:inline-block" size="normal" label="修改密码" @click.native="handleChgPass" primary/>
       <mu-raised-button style="display:inline-block" size="normal" label="退出登录" @click.native="handleLogout"/>
     </div>
     <mu-dialog :open="askLogout" title="退出" @close="closeLogoutDialog">
@@ -77,7 +77,7 @@
         this.$router.push({ name: 'userLogin' })
       },
       handleChgPass () {
-
+        this.$router.push({name: 'changePass'})
       },
       handleAvatarSuccess (res, file) {
         this.currentUser.avatarUrl = URL.createObjectURL(file.raw)

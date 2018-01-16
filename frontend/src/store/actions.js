@@ -97,14 +97,12 @@ const actions = {
     store.state.isRootView = false
   },
   [ USER_CHANGE_PASS ]: function (store, param) {
-    store.state.changePassFail = true
+    store.state.changePassStatus = -2
     axios.post('/user/change_pass', param)
       .then(function (response) {
-        if (response.data.status !== 0) {
-          store.state.changePassFail = true
-        } else {
-          store.state.changePassFail = false
-        }
+        store.state.changePassStatus = response.data.status
+        store.state.changePassStatusText = response.data.text
+        console.log('change pass succeed')
       })
       .catch(handleError)
   },
