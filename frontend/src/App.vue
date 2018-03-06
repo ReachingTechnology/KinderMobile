@@ -4,6 +4,9 @@
     <div class="header">
       <mu-appbar :title="appTitle">
         <mu-icon-button icon="chevron_left" slot="left" @click="onBackButtonClick" v-show="!isRootView && user._id != ''"/>
+        <mu-icon-menu v-show="shouldHaveTopRightMenu && !enterEditMode" icon="more_vert" slot="right" @itemClick="onTopRightMenuItemClicked">
+          <mu-menu-item v-for="menuItem in topRightMenuSetting" :title="menuItem.title" :value="menuItem"/>
+        </mu-icon-menu>
       </mu-appbar>
     </div>
     <div class="content">
@@ -22,7 +25,7 @@
           <mu-bottom-nav-item value="today_task" title="今日任务" icon="assignment"/>
           <mu-bottom-nav-item value="task_info" title="任务统计" icon="assessment"/>
           <mu-bottom-nav-item value="notification" v-show="totalNewNotification > 0" title="消息通知">
-            <mu-badge :content="totalNewNotification" class="demo-icon-badge" circle secondary>
+            <mu-badge :content="totalNewNotification" circle secondary>
               <mu-icon value="email"/>
             </mu-badge>
           </mu-bottom-nav-item>
@@ -70,6 +73,7 @@
   import MobileUserLogin from './components/mobile/mobile_user_login.vue'
   import MobileUserDayTask from './components/mobile/mobile_user_day_task.vue'
   import notificationUtil from './utils/NotificationUtil'
+  import store from './store/store'
 
   export default {
     name: 'app',
@@ -77,7 +81,7 @@
       MobileUserLogin, MobileUserDayTask
     },
     computed: {
-      ...mapGetters(['authenticated', 'datePickerOptionsDay', 'datePickerOptionsMonth', 'user', 'appTitle', 'totalNewNotification', 'isRootView'])
+      ...mapGetters(['authenticated', 'datePickerOptionsDay', 'datePickerOptionsMonth', 'user', 'appTitle', 'totalNewNotification', 'isRootView', 'shouldHaveTopRightMenu', 'topRightMenuSetting', 'enterEditMode'])
     },
     created: function () {
 //      this.user._id = '000001'
@@ -124,6 +128,9 @@
           data: { test: 1 }
         }
 //        notificationUtil.scheduleSingle(param)
+      },
+      topRightMenuSetting: function(val) {
+
       }
     },
     methods: {
@@ -142,11 +149,14 @@
       },
       onBackButtonClick: function () {
         this.$router.go(-1)
+      },
+      onTopRightMenuItemClicked: function (menuItem) {
+        store.dispatch(menuItem.value.action)
       }
     }
   }
 </script>
-<style scoped>
+<style>
   .layout{
     /*background-color: rgb(236, 236, 236);*/
     height: 100%;
@@ -219,6 +229,14 @@
     height:20px;
   }
 
+  /*.mu-badge-secondary {*/
+    /*width: 15px;*/
+    /*height: 15px;*/
+    /*top: -10px;*/
+    /*right: -10px;*/
+    /*font-size: 6px;*/
+    /*font-weight: bold;*/
+  /*}*/
   /*.bottom_bar_title {*/
   /*color: white;*/
   /*}*/

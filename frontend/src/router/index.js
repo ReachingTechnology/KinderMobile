@@ -14,6 +14,10 @@ import MobileUserDutyNotificationList from '../components/mobile/mobile_user_dut
 import MobileUserInformList from '../components/mobile/mobile_user_inform_list.vue'
 import MobileUserLogin from '../components/mobile/mobile_user_login.vue'
 import ChangePassword from '../components/mobile/mobile_change_pass.vue'
+import MobileUserNotificationDetail from '../components/mobile/mobile_info_user_notification_detail.vue'
+import MobileUserInformDetail from '../components/mobile/mobile_info_user_inform_detail.vue'
+import MobileManageInformList from '../components/mobile/mobile_manage_inform_list.vue'
+import MobileEditInform from '../components/mobile/mobile_edit_inform.vue'
 
 Vue.use(Router)
 Vue.use(Vuex)
@@ -105,6 +109,38 @@ const router = new Router({
       path: '/userInformList',
       name: 'userInformList',
       component: MobileUserInformList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/userDutyNotificationDetail/:notification',
+      name: 'userDutyNotificationDetail',
+      component: MobileUserNotificationDetail,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/userInformDetail/:inform',
+      name: 'userInformDetail',
+      component: MobileUserInformDetail,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/manageInformList/',
+      name: 'manageInformList',
+      component: MobileManageInformList,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/editInformDetail/:inform',
+      name: 'editInformDetail',
+      component: MobileEditInform,
       meta: {
         keepAlive: true
       }

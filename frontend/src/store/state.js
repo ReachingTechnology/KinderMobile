@@ -28,9 +28,9 @@ const state = {
   newDutyNotificationCount: 0,
   totalNewNotification: 0,
   // 后端服务器地址
-  // backend_uri: 'https://192.168.31.69:7070',
-  backend_uri: 'https://47.94.192.237:7070',
-  // backend_uri: 'https://127.0.0.1  :7070',
+  backend_uri: 'https://192.168.31.69:7070',
+  // backend_uri: 'https://47.94.192.237:7070',
+  // backend_uri: 'https://127.0.0.1:7070',
   all_statistic_data: [], // 所有用户的所有任务在一个时间段内执行的情况
   userDayTask: {'DUTY_TIME_TYPE_ROUTINE': [], 'DUTY_TIME_TYPE_PERIODICAL': [], 'DUTY_TIME_TYPE_SPECIFIC': []}, // 用户的所有任务在某一天执行的情况
   userDaterangeTask: [], // 用户的所有任务在一个时间段里执行的情况
@@ -96,6 +96,9 @@ const state = {
   changePassStatusText: '',
   isRootView: false,
   taskQueryDate: [],
-  dayTaskCollapse: {'DUTY_TIME_TYPE_ROUTINE': false, 'DUTY_TIME_TYPE_PERIODICAL': false, 'DUTY_TIME_TYPE_SPECIFIC': false}
+  dayTaskCollapse: {'DUTY_TIME_TYPE_ROUTINE': false, 'DUTY_TIME_TYPE_PERIODICAL': false, 'DUTY_TIME_TYPE_SPECIFIC': false},
+  shouldHaveTopRightMenu: false,
+  topRightMenuSetting: [],
+  enterEditMode: false
 }
 export default state

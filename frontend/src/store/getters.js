@@ -33,6 +33,9 @@ const getters = {
   changePassStatus: state => { return state.changePassStatus },
   isRootView: state => { return state.isRootView },
   taskQueryDate: state => { return state.taskQueryDate },
-  dayTaskCollapse: state => { return state.dayTaskCollapse }
+  dayTaskCollapse: state => { return state.dayTaskCollapse },
+  shouldHaveTopRightMenu: state => { return state.shouldHaveTopRightMenu },
+  topRightMenuSetting: state => { return state.topRightMenuSetting },
+  enterEditMode: state => { return state.enterEditMode }
 }
 export default getters

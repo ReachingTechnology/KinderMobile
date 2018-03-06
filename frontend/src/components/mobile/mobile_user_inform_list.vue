@@ -1,9 +1,12 @@
 <template>
   <div>
     <mu-list @itemClick="itemClicked">
-      <mu-list-item  v-for="item in messages" :title="item.taskname" :describeText="item.msgArriveTimeDisplay" :value="item" :afterText="item.descr">
-        <mu-avatar :icon="getPriorityIcon(item)" :backgroundColor="getPriorityIconColor(item)" slot="leftAvatar"/>
+      <mu-list-item  v-for="item in messages" :title="item.name" :describeText="item.msgArriveTimeDisplay" :value="item">
+        <mu-avatar size="30" iconSize="20" :icon="getPriorityIcon(item)" :backgroundColor="getPriorityIconColor(item)" slot="leftAvatar"/>
+        <mu-avatar size="20" iconSize="15" v-show="!item.isNew" icon="done" backgroundColor="green" slot="rightAvatar"/>
         <!--<mu-icon value="chevron_right" slot="right"/>-->
+        <mu-divider slot="default"/>
+        <mu-badge content="new" secondary v-show="item.isNew" slot="rightAvatar"/>
       </mu-list-item>
     </mu-list>
   </div>
@@ -19,7 +22,7 @@
 </style>
 <script>
   import { mapActions, mapGetters } from 'vuex'
-  import { CHANGE_APP_TITLE, GET_INFORM_BY_USER } from '../../store/mutation_types'
+  import { CHANGE_APP_TITLE, GET_INFORM_BY_USER, CHECK_SINGLE_INFORM } from '../../store/mutation_types'
   //  import dateUtil from '../../utils/DateUtil'
   import Moment from 'moment'
   import {NOTIFY_PRIORITY} from '../../store/common_defs'
@@ -34,10 +37,15 @@
         }
         return ''
       },
-      itemClicked (item) {
+      itemClicked (row) {
+        var item = row.value
+        if (item.isNew) {
+          this.CHECK_SINGLE_INFORM(item)
+        }
+        this.$router.push({name: 'userInformDetail', params:{inform: item}})
       },
       getData () {
-        this.GET_INFORM_BY_USER()
+        this.GET_INFORM_BY_USER({'pageNum': 0})
       },
       showEditOver () {
         this.showEdit = false
@@ -60,7 +68,7 @@
           return 'green'
         }
       },
-      ...mapActions([CHANGE_APP_TITLE, GET_INFORM_BY_USER])
+      ...mapActions([CHANGE_APP_TITLE, GET_INFORM_BY_USER, CHECK_SINGLE_INFORM])
     },
     computed: {
       ...mapGetters(['userInform']),

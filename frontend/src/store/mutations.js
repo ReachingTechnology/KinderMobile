@@ -219,6 +219,12 @@ const mutations = {
   SET_ROOT_VIEW (state, data) {
     state.isRootView = data
   },
+  SET_SHOULD_HAVE_TOPRIGHT_MENU (state, data) {
+    state.shouldHaveTopRightMenu = data
+  },
+  SET_TOPRIGHT_MENU_SETTING ( state, data) {
+    state.topRightMenuSetting = data
+  },
   SET_TASK_QUERY_DATE (state, data) {
     state.taskQueryDate = data
   }

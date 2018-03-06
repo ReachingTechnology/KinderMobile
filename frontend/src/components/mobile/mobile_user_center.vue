@@ -2,14 +2,6 @@
   <div align="center">
     <br/>
     <mu-avatar slot="center" icon="person" :size="100"></mu-avatar>
-    <!--<el-upload-->
-      <!--class="avatar-uploader"-->
-      <!--action="https://47.94.192.237:7070/util/uploadimage"-->
-      <!--:show-file-list="false"-->
-      <!--:on-success="handleAvatarSuccess">-->
-      <!--<img v-if="currentUser.avatarUrl" :src="currentUser.avatarUrl" class="avatar">-->
-      <!--<i v-else class="el-icon-plus"></i>-->
-    <!--</el-upload>-->
     <br/>
     <mu-text-field :disabled="true" label="编号" v-model="currentUser._id" labelFloat/>
     <br/>

@@ -1,9 +1,12 @@
 <template>
   <div>
     <mu-list @itemClick="itemClicked">
-      <mu-list-item  v-for="item in messages" :title="item.taskname" :describeText="item.msgArriveTimeDisplay" :value="item" :afterText="item.msgContent">
-        <mu-avatar :icon="getPriorityIcon(item)" :backgroundColor="getPriorityIconColor(item)" slot="leftAvatar"/>
+      <mu-list-item  v-for="item in messages" :title="item.taskname" :describeText="item.msgArriveTimeDisplay" :value="item">
+        <mu-avatar size="30" iconSize="20" :icon="getPriorityIcon(item)" :backgroundColor="getPriorityIconColor(item)" slot="leftAvatar"/>
+        <mu-avatar size="20" iconSize="15" v-show="!item.isNew" icon="done" backgroundColor="green" slot="rightAvatar"/>
         <!--<mu-icon value="chevron_right" slot="right"/>-->
+        <mu-divider slot="default"/>
+        <mu-badge content="new" secondary v-show="item.isNew" slot="rightAvatar"/>
       </mu-list-item>
     </mu-list>
   </div>
@@ -19,7 +22,7 @@
 </style>
 <script>
   import { mapActions, mapGetters } from 'vuex'
-  import { CHANGE_APP_TITLE, GET_DUTY_NOTIFICATION_BY_USER } from '../../store/mutation_types'
+  import { CHANGE_APP_TITLE, GET_DUTY_NOTIFICATION_BY_USER, CHECK_SINGLE_NOTIFICATION } from '../../store/mutation_types'
   //  import dateUtil from '../../utils/DateUtil'
   import Moment from 'moment'
   import {NOTIFY_PRIORITY} from '../../store/common_defs'
@@ -34,10 +37,15 @@
         }
         return ''
       },
-      itemClicked (item) {
+      itemClicked (row) {
+        var item = row.value
+        if (item.isNew) {
+          this.CHECK_SINGLE_NOTIFICATION(item)
+        }
+        this.$router.push({name: 'userDutyNotificationDetail', params: {notification: item}})
       },
       getData () {
-        this.GET_DUTY_NOTIFICATION_BY_USER()
+        this.GET_DUTY_NOTIFICATION_BY_USER({'pageNum': 0})
       },
       showEditOver () {
         this.showEdit = false
@@ -60,7 +68,7 @@
           return 'green'
         }
       },
-      ...mapActions([CHANGE_APP_TITLE, GET_DUTY_NOTIFICATION_BY_USER])
+      ...mapActions([CHANGE_APP_TITLE, GET_DUTY_NOTIFICATION_BY_USER, CHECK_SINGLE_NOTIFICATION])
     },
     computed: {
       ...mapGetters(['userDutyNotification']),
@@ -69,9 +77,9 @@
         for (var i = 0, len = this.userDutyNotification.length; i < len; i++) {
           var item = this.userDutyNotification[i]
           if (item.notifyTimeType === 'after') {
-            item.msgContent = '应该于' + Moment(item.realendtime * 1000).format('H:mm') + '完成执行.'
+            item.msgContent = item.taskname + '应该于' + Moment(item.realendtime * 1000).format('H:mm') + '完成执行.'
           } else {
-            item.msgContent = '将于' + Moment(item.realstarttime * 1000).format('H:mm') + '开始执行.'
+            item.msgContent = item.taskname + '将于' + Moment(item.realstarttime * 1000).format('H:mm') + '开始执行.'
           }
           item.msgArriveTimeDisplay = Moment(item.informSendTime * 1000).format('YY年M月D日 H:mm')
           item.msgPriorityDisplay = NOTIFY_PRIORITY[item.notifyPriority]

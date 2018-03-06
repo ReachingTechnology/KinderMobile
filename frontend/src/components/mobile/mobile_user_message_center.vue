@@ -1,12 +1,20 @@
 <template>
   <div>
     <mu-list @itemClick="itemClicked">
-      <mu-list-item  title="职责提醒" :describeText="'共' + newDutyNotificationCount + '项新提醒'" value="dutyNotification">
+      <mu-list-item  title="我的职责提醒" :describeText="'共' + newDutyNotificationCount + '项新提醒'" value="dutyNotification">
+        <mu-icon value="chevron_right" slot="right"/>
+        <mu-badge v-show="newDutyNotificationCount > 0" :content="newDutyNotificationCount" slot="after" secondary circle/>
+      </mu-list-item>
+      <mu-divider shallowInset/>
+      <mu-list-item  title="我的工作通知" :describeText="'共' + newInformCount + '项新提醒'" value="inform">
+        <mu-icon value="chevron_right" slot="right"/>
+        <mu-badge v-show="newInformCount > 0" :content="newInformCount" slot="after" secondary circle/>
+      </mu-list-item>
+      <mu-divider shallowInset/>
+      <mu-list-item  title="发送工作通知" :describeText="'已有' + allInform.length + '条通知'">
         <mu-icon value="chevron_right" slot="right"/>
       </mu-list-item>
-      <mu-list-item  title="工作通知" :describeText="'共' + newInformCount + '项新提醒'" value="inform">
-        <mu-icon value="chevron_right" slot="right"/>
-      </mu-list-item>
+      <mu-divider shallowInset/>
     </mu-list>
   </div>
 </template>
@@ -39,18 +47,21 @@
       itemClicked (item) {
         if (item.value === 'dutyNotification') {
           this.$router.push({name: 'userDutyNotificationList'})
-        } else {
+        } else if (item.value === 'inform') {
           this.$router.push({name: 'userInformList'})
+        } else {
+          this.$router.push({name: 'manageInformList'})
         }
       },
       getData () {
         this.GET_NEW_INFORM_COUNT()
         this.GET_NEW_DUTY_NOTIFICATION_COUNT()
+        this.GET_ALL_INFORM()
       },
-      ...mapActions([CHANGE_APP_TITLE, GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT, SET_ROOT_VIEW])
+      ...mapActions([CHANGE_APP_TITLE, GET_ALL_INFORM, GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT, SET_ROOT_VIEW])
     },
     computed: {
-      ...mapGetters(['newInformCount', 'newDutyNotificationCount'])
+      ...mapGetters(['newInformCount', 'newDutyNotificationCount', 'allInform'])
     },
     beforeRouteEnter: function (to, from, next) {
       next(vm => {

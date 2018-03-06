@@ -10,14 +10,16 @@ import { GET_CURRENT_USER, CHANGE_APP_TITLE, SET_ACTIVE_MENU, GET_ALL_USER_TASK_
   COMMIT_TASK_EXEC_INFO, GET_TASK_EXEC_DATA_BY_DATE, GET_USER_TASK_EXEC_DATA_BY_DATERANGE, GET_ONE_TASK_EXEC_DATA_BY_DATERANGE,
   GET_ALL_DUTY, UPSERT_DUTY, REMOVE_DUTIES, GET_ALL_DUTY_CATEGORY, UPSERT_DUTY_CATEGORY, REMOVE_DUTY_CATEGORIES,
   GET_ALL_USER_LOCATION, UPSERT_USER_LOCATION,
-  GET_ALL_INFORM, GET_DUTY_NOTIFICATION_BY_USER, GET_INFORM_BY_USER, UPSERT_INFORM, REMOVE_INFORMS, GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT,
-  SET_ROOT_VIEW, SET_TASK_QUERY_DATE, SET_COLLAPSE_STATE } from './mutation_types'
+  GET_ALL_INFORM, GET_DUTY_NOTIFICATION_BY_USER, GET_NEW_DUTY_NOTIFICATION_BY_USER, GET_INFORM_BY_USER, GET_NEW_INFORM_BY_USER, UPSERT_INFORM, REMOVE_INFORMS,
+  GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT, CHECK_SINGLE_NOTIFICATION, CHECK_SINGLE_INFORM,
+  SET_ROOT_VIEW, SET_SHOULD_HAVE_TOPRIGHT_MENU, SET_TOPRIGHT_MENU_SETTING, SET_TASK_QUERY_DATE, SET_COLLAPSE_STATE } from './mutation_types'
 // import dateUtil from '../utils/DateUtil'
 import state from './state'
 import store from './store'
 import dateUtil from '../utils/DateUtil'
 import {DUTY_TIME_TYPE_ALL} from './common_defs'
 import preferenceUtil from '../utils/PreferenceUtil'
+import router from '../router'
 
 axios.defaults.baseURL = state.backend_uri
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN
@@ -30,6 +32,7 @@ function handleError (error) {
   if (error.response.status === 401) {
     var empty_user =  {'_id': '', 'name': ''}
     store.commit('SET_USER', empty_user)
+    store.dispatch('CHANGE_APP_TITLE', '幼儿园安保系统')
   }
 }
 
@@ -71,8 +74,6 @@ const actions = {
         console.log('user login')
         console.log(response.data)
         window.cookieEmperor.getCookie(state.backend_uri, 'user', function(data) {
-          console.log('{{{{{{{{{{{{{{{{{{{{{{{')
-          console.log(data.cookieValue)
           preferenceUtil.save('cookie_user', data.cookieValue)
         }, function(error) {
           if (error) {
@@ -483,7 +484,7 @@ const actions = {
    */
   [ GET_ALL_INFORM ]: function (store, param) {
     'use strict'
-    axios.get('/inform/query_all_inform ')
+    axios.post('/inform/query_all_inform', {'userid': store.state.user['_id']})
       .then(function (response) {
         store.commit('SET_ALL_INFORM', response.data)
       })
@@ -492,7 +493,7 @@ const actions = {
   [ GET_DUTY_NOTIFICATION_BY_USER ]: function (store, param) {
     'use strict'
     console.log('query duty notification by user:::::::')
-    axios.post('/inform/get_duty_notification_by_user', {'userid': store.state.user['_id'], 'queryTime': dateUtil.getNow(), 'startofday': dateUtil.getStartOfToday()})
+    axios.post('/inform/get_all_duty_notification_by_user', {'userid': store.state.user['_id'], 'pageNum': param.pageNum})
       .then(function (response) {
         console.log('get duty notifcation by user:')
         console.log(response.data)
@@ -503,7 +504,29 @@ const actions = {
   [ GET_INFORM_BY_USER ]: function (store, param) {
     'use strict'
     console.log('query inform by user:::::::')
-    axios.post('/inform/query_inform_by_user', {'userid': store.state.user['_id'], 'queryTime': dateUtil.getNow(), 'startofday': dateUtil.getStartOfToday()})
+    axios.post('/inform/get_all_inform_by_user', {'userid': store.state.user['_id'], 'pageNum': param.pageNum })
+      .then(function (response) {
+        console.log('get inform by user:')
+        console.log(response.data)
+        store.commit('SET_USER_INFORM_DATA', response.data)
+      })
+      .catch(handleError)
+  },
+  [ GET_NEW_DUTY_NOTIFICATION_BY_USER ]: function (store, param) {
+    'use strict'
+    console.log('query duty notification by user:::::::')
+    axios.post('/inform/get_new_duty_notification_by_user', {'userid': store.state.user['_id']})
+      .then(function (response) {
+        console.log('get duty notifcation by user:')
+        console.log(response.data)
+        store.commit('SET_USER_DUTY_NOTIFICATION_DATA', response.data)
+      })
+      .catch(handleError)
+  },
+  [ GET_NEW_INFORM_BY_USER ]: function (store, param) {
+    'use strict'
+    console.log('query inform by user:::::::')
+    axios.post('/inform/query_new_inform_by_user', {'userid': store.state.user['_id']})
       .then(function (response) {
         console.log('get inform by user:')
         console.log(response.data)
@@ -527,7 +550,7 @@ const actions = {
   },
   [ GET_NEW_DUTY_NOTIFICATION_COUNT ]: function (store, param) {
     'use strict'
-    axios.post('/inform/get_new_duty_notification_count', {'userid': store.state.user['_id'], 'queryTime': dateUtil.getNow(), 'startofday': dateUtil.getStartOfToday()})
+    axios.post('/inform/get_new_duty_notification_count', {'userid': store.state.user['_id'], 'startofday': dateUtil.getStartOfToday()})
       .then(function (response) {
         console.log('got new duty notification count' + response.data.count)
         store.commit('SET_NEW_DUTY_NOTIFICATION_COUNT', response.data)
@@ -536,11 +559,27 @@ const actions = {
   },
   [ GET_NEW_INFORM_COUNT ]: function (store, param) {
     'use strict'
-    axios.post('/inform/get_new_inform_count', {'userid': store.state.user['_id'], 'queryTime': dateUtil.getNow()})
+    axios.post('/inform/get_new_inform_count', {'userid': store.state.user['_id']})
       .then(function (response) {
         console.log('got new inform count' + response.data.count)
         store.commit('SET_NEW_INFORM_COUNT', response.data)
       })
+      .catch(handleError)
+  },
+  [ CHECK_SINGLE_NOTIFICATION ]: function (store, param) {
+    axios.post('/inform/check_single_notification', param).then(function (response) {
+      param.isNew = false
+      store.state.newDutyNotificationCount--
+      store.state.totalNewNotification--
+    })
+      .catch(handleError)
+  },
+  [ CHECK_SINGLE_INFORM ]: function (store, param) {
+    axios.post('/inform/check_single_inform', param).then(function (response) {
+      param.isNew = false
+      store.state.newInformCount--
+      store.state.totalNewNotification--
+    })
       .catch(handleError)
   },
   /*
@@ -549,11 +588,41 @@ const actions = {
   [ SET_ROOT_VIEW ]: function (store, param) {
     store.commit('SET_ROOT_VIEW', param)
   },
+  [ SET_SHOULD_HAVE_TOPRIGHT_MENU ]: function (store, param) {
+    store.commit('SET_SHOULD_HAVE_TOPRIGHT_MENU', param)
+  },
+  [ SET_TOPRIGHT_MENU_SETTING ]: function (store, param) {
+    store.commit('SET_TOPRIGHT_MENU_SETTING', param)
+  },
   [ SET_TASK_QUERY_DATE ]: function (store, param) {
     store.commit('SET_TASK_QUERY_DATE', param)
   },
   [ SET_COLLAPSE_STATE ]: function (store, param) {
     store.state.dayTaskCollapse[param.type] = param.value
+  },
+
+  /*
+   Menu actions
+   */
+  [ 'CREATE_NEW_INFORM' ]: function () {
+    var emptyInform = {
+      '_id': '',
+      'name': '',
+      'descr': '',
+      'notifyType': '',
+      'notifyPriority': '',
+      'sendTime': dateUtil.getNow(),
+      'informUserList': [],
+      'sender': ''
+    }
+    router.push({name: 'editInformDetail', params:{inform: emptyInform}})
+  },
+  [ 'ENTER_EDIT_MODE' ]: function () {
+    state.enterEditMode = true
+  },
+  [ 'EXIT_EDIT_MODE']: function () {
+    console.log('exit edit mode')
+    state.enterEditMode = false
   }
 }
 

@@ -20,6 +20,8 @@ import locationUtil from './utils/LocationUtil'
 import notificationUtil from './utils/NotificationUtil'
 import backgroundModeUtil from './utils/BackgroundModeUtil'
 import VueCordova from 'vue-cordova'
+import MintUI from 'mint-ui'
+import 'mint-ui/lib/style.css'
 
 Vue.use(Element)
 // Vue.use(VueRouter)
@@ -27,6 +29,7 @@ Vue.use(Vuex)
 Vue.use(MuseUI)
 Vue.use(Moment)
 Vue.use(VueCordova)
+Vue.use(MintUI)
 // Vue.use(Vuetify)
 
 Vue.config.productionTip = false
