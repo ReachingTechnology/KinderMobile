@@ -240,4 +240,32 @@
   /*.bottom_bar_title {*/
   /*color: white;*/
   /*}*/
+
+  .edit_button_container {
+    background-color: white;
+    display: inline-block;
+    width: 100%;
+    height: 48px;
+    bottom: 0;
+    left:0;
+    position: fixed;
+    white-space: nowrap;
+  }
+
+  .edit_button {
+    display: inline-block;
+    width: 50%;
+    height: 100%;
+    text-align: center;
+    line-height: 48px;
+    border-width: thin;
+    border-color: black;
+    white-space: normal;
+  }
+  .edit_button_left {
+    border-style: solid solid none none;
+  }
+  .edit_button_right {
+    border-style: solid none none none;
+  }
 </style>

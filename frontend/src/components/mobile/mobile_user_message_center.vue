@@ -29,7 +29,7 @@
 </style>
 <script>
   import { mapActions, mapGetters } from 'vuex'
-  import { CHANGE_APP_TITLE, GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT, SET_ROOT_VIEW } from '../../store/mutation_types'
+  import { CHANGE_APP_TITLE, GET_ALL_INFORM, GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT, SET_ROOT_VIEW } from '../../store/mutation_types'
 //  import dateUtil from '../../utils/DateUtil'
   import Moment from 'moment'
   import {NOTIFY_PRIORITY} from '../../store/common_defs'

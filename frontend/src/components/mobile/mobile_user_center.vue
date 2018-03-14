@@ -1,7 +1,7 @@
 <template>
   <div align="center">
     <br/>
-    <mu-avatar slot="center" icon="person" :size="100"></mu-avatar>
+    <mu-avatar slot="center" :icon="avatarIcon" :size="100" @click="changeAvatar" :src="avatarUrl"></mu-avatar>
     <br/>
     <mu-text-field :disabled="true" label="编号" v-model="currentUser._id" labelFloat/>
     <br/>
@@ -26,6 +26,7 @@
   import { USER_LOGOUT, GET_CURRENT_USER, CHANGE_APP_TITLE, SET_ROOT_VIEW } from '../../store/mutation_types'
   import ObjUtil from '../../utils/ObjUtil'
   import Util from '../../store/utils'
+  import FileUtil from '../../utils/FileUtil'
 
   export default {
     name: 'app',
@@ -43,7 +44,9 @@
     },
     data: () => {
       return {
-        askLogout: false
+        askLogout: false,
+        avatarUrl: '',
+        avatarIcon: 'people'
       }
     },
     beforeRouteEnter: function (to, from, next) {
@@ -74,6 +77,54 @@
       handleAvatarSuccess (res, file) {
         this.currentUser.avatarUrl = URL.createObjectURL(file.raw)
         this.GET_CURRENT_USER()
+      },
+      setOptions (srcType) {
+        var options = {
+          // Some common settings are 20, 50, and 100
+          quality: 50,
+          destinationType: Camera.DestinationType.FILE_URI,
+          // In this app, dynamically set the picture source, Camera or photo gallery
+          sourceType: srcType,
+          encodingType: Camera.EncodingType.JPEG,
+          mediaType: Camera.MediaType.PICTURE,
+          saveToPhotoAlbum: true,
+          allowEdit: true,
+          correctOrientation: true  //Corrects Android orientation quirks
+        }
+        return options;
+      },
+      createNewFileEntry (imgUri) {
+        console.log(cordova.file.externalDataDirectory)
+        FileUtil.createNewImgFileEntry(cordova.file.externalDataDirectory, 'useravatar', 'avatar.jpg', imgUri)
+      },
+      uploadImage (imgUri) {
+//        FileUtil.upload(imgUri)
+        this.avatarUrl = imgUri
+        this.avatarIcon = ''
+      },
+      onUploadImgSucceed () {
+        console.log('upload image succeed')
+      },
+      onUploadImgFail () {
+        console.log('upload image failed')
+      },
+      changeAvatar () {
+        var srcType = Camera.PictureSourceType.CAMERA;
+        var options = this.setOptions(srcType);
+        var func = this.uploadImage;
+
+        options.targetHeight = 100;
+        options.targetWidth = 100;
+
+        navigator.camera.getPicture(function cameraSuccess(imageUri) {
+
+          console.log('take picture successfully!!')
+          func(imageUri);
+
+        }, function cameraError(error) {
+          console.debug("Unable to obtain picture: " + error, "app");
+
+        }, options);
       },
 //      beforeAvatarUpload (file) {
 //        const isJPG = file.type === 'image/jpeg'

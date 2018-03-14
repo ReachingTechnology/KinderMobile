@@ -11,7 +11,7 @@ import { GET_CURRENT_USER, CHANGE_APP_TITLE, SET_ACTIVE_MENU, GET_ALL_USER_TASK_
   GET_ALL_DUTY, UPSERT_DUTY, REMOVE_DUTIES, GET_ALL_DUTY_CATEGORY, UPSERT_DUTY_CATEGORY, REMOVE_DUTY_CATEGORIES,
   GET_ALL_USER_LOCATION, UPSERT_USER_LOCATION,
   GET_ALL_INFORM, GET_DUTY_NOTIFICATION_BY_USER, GET_NEW_DUTY_NOTIFICATION_BY_USER, GET_INFORM_BY_USER, GET_NEW_INFORM_BY_USER, UPSERT_INFORM, REMOVE_INFORMS,
-  GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT, CHECK_SINGLE_NOTIFICATION, CHECK_SINGLE_INFORM,
+  GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT, CHECK_SINGLE_NOTIFICATION, CHECK_SINGLE_INFORM, REMOVE_USER_NOTIFICATIONS, REMOVE_USER_INFORMS,
   SET_ROOT_VIEW, SET_SHOULD_HAVE_TOPRIGHT_MENU, SET_TOPRIGHT_MENU_SETTING, SET_TASK_QUERY_DATE, SET_COLLAPSE_STATE } from './mutation_types'
 // import dateUtil from '../utils/DateUtil'
 import state from './state'
@@ -581,6 +581,18 @@ const actions = {
       store.state.totalNewNotification--
     })
       .catch(handleError)
+  },
+  [ REMOVE_USER_INFORMS ]: function (store, param) {
+    axios.post('/inform/remove_user_inform', param)
+      .then(function (response) {
+        store.dispatch(GET_INFORM_BY_USER, {pageNum: 0})
+      })
+  },
+  [ REMOVE_USER_NOTIFICATIONS ]: function (store, param) {
+    axios.post('/inform/remove_user_notification', param)
+      .then(function (response) {
+        store.dispatch(GET_DUTY_NOTIFICATION_BY_USER, {pageNum: 0})
+      })
   },
   /*
    Layout

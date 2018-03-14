@@ -1,12 +1,5 @@
 <template>
   <div>
-    <div v-show="enterEditMode" class="edit_button_container">
-      <div class="edit_button edit_button_left" @click="onRemoveSelectedInforms">
-        删除
-      </div><div class="edit_button edit_button_right" @click="onExitEditMode">
-        取消
-      </div>
-    </div>
     <mu-list @itemClick="itemClicked">
       <mu-list-item  v-for="(item, index) in informs" :disabled="enterEditMode" :title="item.name" :describeText="item.sendTimeDisplay" :value="item">
         <mu-avatar v-show="!enterEditMode" size="30" iconSize="20" :icon="getPriorityIcon(item)" :backgroundColor="getPriorityIconColor(item)" slot="leftAvatar"/>
@@ -16,6 +9,13 @@
         <mu-divider slot="default"/>
       </mu-list-item>
     </mu-list>
+    <div v-show="enterEditMode" class="edit_button_container">
+      <div class="edit_button edit_button_left" @click="onRemoveSelectedInforms">
+        删除
+      </div><div class="edit_button edit_button_right" @click="onExitEditMode">
+      取消
+    </div>
+    </div>
   </div>
 </template>
 <style>
@@ -30,33 +30,6 @@
   .radio_class {
     width: 10px;
     height: 10px;
-  }
-
-  .edit_button_container {
-    display: inline-block;
-    width: 100%;
-    height: 48px;
-    bottom: 0;
-    left:0;
-    position: fixed;
-    white-space: nowrap;
-  }
-
-  .edit_button {
-    display: inline-block;
-    width: 50%;
-    height: 100%;
-    text-align: center;
-    line-height: 48px;
-    border-width: thin;
-    border-color: black;
-    white-space: normal;
-  }
-  .edit_button_left {
-    border-style: solid solid none none;
-  }
-  .edit_button_right {
-    border-style: solid none none none;
   }
 </style>
 <script>
@@ -153,8 +126,7 @@
     data: () => {
       return {
         selectedData: {},
-        selectedInforms: [],
-        editActions: [{name: '删除', method: this.onRemoveSelectedInforms}, {name: '取消', method: this.onExitEditMode}]
+        selectedInforms: []
       }
     },
     components: {

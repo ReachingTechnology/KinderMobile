@@ -18,6 +18,7 @@ import MobileUserNotificationDetail from '../components/mobile/mobile_info_user_
 import MobileUserInformDetail from '../components/mobile/mobile_info_user_inform_detail.vue'
 import MobileManageInformList from '../components/mobile/mobile_manage_inform_list.vue'
 import MobileEditInform from '../components/mobile/mobile_edit_inform.vue'
+import SelectUser from '../components/mobile/mobile_user_selection_list.vue'
 
 Vue.use(Router)
 Vue.use(Vuex)
@@ -141,6 +142,14 @@ const router = new Router({
       path: '/editInformDetail/:inform',
       name: 'editInformDetail',
       component: MobileEditInform,
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/selectUser/:inform/:selectedData/:title/:singleSelection',
+      name: 'selectUser',
+      component: SelectUser,
       meta: {
         keepAlive: true
       }

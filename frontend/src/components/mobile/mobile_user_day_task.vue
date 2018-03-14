@@ -70,6 +70,9 @@
       },
       itemClicked (item) {
         var task = item
+        if (task.pictures === undefined) {
+          task.pictures = []
+        }
         this.$router.push({name: 'editTaskDetailPage', params: {task: task, date: dateUtil.getTheDay(task.startofday), showApprove: false}})
       },
       ...mapActions([GET_TASK_EXEC_DATA_BY_DATE, COMMIT_TASK_EXEC_INFO, CHANGE_APP_TITLE, SET_ROOT_VIEW, SET_COLLAPSE_STATE]),

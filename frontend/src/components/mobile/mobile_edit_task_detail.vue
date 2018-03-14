@@ -27,6 +27,15 @@
       <mu-menu-item value=1   title="工作安排"/>
     </mu-select-field>
     <br/>
+    <mu-grid-list class="gridlist-inline-demo">
+      <mu-grid-tile v-for="tile, index in task.pictures" :key="index">
+        <img :src="tile.localUri"/>
+        <!--<span slot="title">{{tile.title}}</span>-->
+        <span slot="subTitle">{{tile.createTime}}</span>
+        <mu-icon-button icon="clear" slot="action" @click="onRemovePicture"/>
+      </mu-grid-tile>
+      <mu-icon-button icon="add_box" color="green" size="100" @click="onAddPicture"/>
+    </mu-grid-list>
     <div>
       <mu-raised-button style="display: inline-block" @click="cancelEdit" label="取消" class="raised-button" />
       <mu-raised-button style="display: inline-block" @click="commitEdit" :label="task.finish_status === TASK_STATUS_INPROCESS ? '完成':'提交'" class="raised-button" backgroundColor="green"/>
@@ -37,6 +46,13 @@
         <mu-circular-progress style="z-index: 2020" :size="60" :strokeWidth="5"/>
       </div>
     </div>
+    <mu-bottom-sheet :open="openActionSheet" @close="closeActionSheet">
+      <mu-list @itemClick="closeActionSheet">
+        <mu-list-item title="拍照" @click="onAddFromCamera"/>
+        <mu-list-item title="从相册里选取" @click="onAddFromAlbum"/>
+        <mu-list-item title="取消"/>
+      </mu-list>
+    </mu-bottom-sheet>
   </div>
 </template>
 <script>
@@ -104,6 +120,62 @@
         console.log(error)
         this.commitInfo(0, 0)
       },
+      onAddPicture () {
+        this.openActionSheet = true
+      },
+      onRemovePicture () {
+
+      },
+      setOptions (srcType) {
+        var options = {
+          // Some common settings are 20, 50, and 100
+          quality: 50,
+          destinationType: Camera.DestinationType.FILE_URI,
+          // In this app, dynamically set the picture source, Camera or photo gallery
+          sourceType: srcType,
+          encodingType: Camera.EncodingType.JPEG,
+          mediaType: Camera.MediaType.PICTURE,
+          saveToPhotoAlbum: true,
+          allowEdit: true,
+          correctOrientation: true  //Corrects Android orientation quirks
+        }
+        return options;
+      },
+      onPicturePicked (imageUri) {
+        var pic = {}
+        pic.localUri = imageUri
+        pic.remoteUri = ''
+        pic.createTime = dateUtil.getNow()
+        this.task.pictures.push(pic)
+      },
+      onAddFromCamera () {
+        var srcType = Camera.PictureSourceType.CAMERA;
+        var options = this.setOptions(srcType);
+        var func = this.onPicturePicked
+
+        navigator.camera.getPicture(function cameraSuccess(imageUri) {
+          func(imageUri);
+
+        }, function cameraError(error) {
+          console.debug("Unable to obtain picture: " + error, "app");
+
+        }, options);
+      },
+      onAddFromAlbum () {
+        var srcType = Camera.PictureSourceType.PHOTOLIBRARY;
+        var options = this.setOptions(srcType);
+        var func = this.onPicturePicked;
+
+        navigator.camera.getPicture(function cameraSuccess(imageUri) {
+          func(imageUri);
+        }, function cameraError(error) {
+          console.debug("Unable to obtain picture: " + error, "app");
+
+        }, options);
+      },
+      closeActionSheet () {
+        this.openActionSheet = false
+      },
       ...mapActions([COMMIT_TASK_EXEC_INFO, CHANGE_APP_TITLE])
     },
     computed: {
@@ -148,7 +220,8 @@
         task: this.$route.params.task,
         selectedDay: this.$route.params.date,
         showApprove: this.$route.params.showApprove,
-        isCommitting: false
+        isCommitting: false,
+        openActionSheet: false
       }
     }
   }
@@ -156,5 +229,11 @@
 <style>
   .raised-button {
     margin: 12px;
+  }
+
+  .gridlist-inline-demo{
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
   }
 </style>

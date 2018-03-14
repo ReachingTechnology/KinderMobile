@@ -1,41 +1,49 @@
 {
-    "prepare_queue": {
-        "installed": [],
-        "uninstalled": []
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-background-mode": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
     },
-    "config_munge": {
-        "files": {}
+    "cordova-plugin-geolocation": {
+      "GEOLOCATION_USAGE_DESCRIPTION": " ",
+      "PACKAGE_NAME": "kinder.reachingtech.com"
     },
-    "installed_plugins": {
-        "cordova-plugin-background-mode": {
-            "PACKAGE_NAME": "kinder.reachingtech.com"
-        },
-        "cordova-plugin-geolocation": {
-            "GEOLOCATION_USAGE_DESCRIPTION": " ",
-            "PACKAGE_NAME": "kinder.reachingtech.com"
-        },
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "kinder.reachingtech.com"
-        },
-        "cordova-plugin-app-preferences": {
-            "PACKAGE_NAME": "kinder.reachingtech.com"
-        },
-        "cordova-plugin-local-notification": {
-            "PACKAGE_NAME": "kinder.reachingtech.com"
-        },
-        "cordova-plugin-cookieemperor": {
-            "PACKAGE_NAME": "kinder.reachingtech.com"
-        }
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
     },
-    "dependent_plugins": {
-        "cordova-plugin-device": {
-            "PACKAGE_NAME": "kinder.reachingtech.com"
-        },
-        "cordova-plugin-compat": {
-            "PACKAGE_NAME": "kinder.reachingtech.com"
-        },
-        "cordova-plugin-app-event": {
-            "PACKAGE_NAME": "kinder.reachingtech.com"
-        }
+    "cordova-plugin-app-preferences": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
+    "cordova-plugin-local-notification": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
+    "cordova-plugin-cookieemperor": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
+    "cordova-plugin-camera": {
+      "CAMERA_USAGE_DESCRIPTION": " ",
+      "PHOTOLIBRARY_USAGE_DESCRIPTION": " ",
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
     }
+  },
+  "dependent_plugins": {
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
+    "cordova-plugin-compat": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
+    "cordova-plugin-app-event": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    }
+  }
 }

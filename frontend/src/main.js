@@ -77,6 +77,8 @@ var app = {
     backgroundModeUtil.initialize()
     preferenceUtil.prefs = plugins.appPreferences
     store.dispatch('GET_CURRENT_USER')
+    console.log('here is file')
+    console.log(cordova.file)
     notificationUtil.notification = cordova.plugins.notification.local
     getUserNotificationPeriodically()
     locationUtil.getLocationPeriodically(300000)
