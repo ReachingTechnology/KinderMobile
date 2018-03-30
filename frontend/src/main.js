@@ -52,7 +52,7 @@ function onBackKeyDown (e) {
   if (store.state.isRootView || store.state.user._id === '') {
     backgroundModeUtil.plugin.moveToBackground()
   } else {
-    this.$router.go(-1)
+    router.go(-1)
   }
   // return false
 }

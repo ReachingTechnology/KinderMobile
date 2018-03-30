@@ -3,7 +3,7 @@
     <mu-text-field label="任务名称" v-model="task.name" disabled>
     </mu-text-field>
     <br/>
-    <mu-text-field label="任务详情" v-model="taskDescr" disabled>
+    <mu-text-field label="任务详情" v-model="taskDescr" multiLine :rows="1" :rowsMax="4" disabled>
     </mu-text-field>
     <br/>
     <mu-text-field label="任务执行时间" v-model="task.executetime" disabled>
