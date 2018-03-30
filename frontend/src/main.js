@@ -22,6 +22,7 @@ import backgroundModeUtil from './utils/BackgroundModeUtil'
 import VueCordova from 'vue-cordova'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
+// import 'lrz'
 
 Vue.use(Element)
 // Vue.use(VueRouter)
@@ -48,10 +49,10 @@ function getUserNotificationPeriodically () {
 function onBackKeyDown (e) {
   console.log('back button fired!!!!!')
   // e.preventDefault()
-  if (store.state.isRootView) {
+  if (store.state.isRootView || store.state.user._id === '') {
     backgroundModeUtil.plugin.moveToBackground()
   } else {
-    router.go(-1)
+    this.$router.go(-1)
   }
   // return false
 }
@@ -83,7 +84,24 @@ var app = {
     getUserNotificationPeriodically()
     locationUtil.getLocationPeriodically(300000)
     document.addEventListener("backbutton", onBackKeyDown, false);
-  },
+
+    var permissions = cordova.plugins.permissions;
+    permissions.hasPermission(permissions.CAMERA, checkPermissionCallback, null);
+    function checkPermissionCallback(status) {
+      if (!status.hasPermission) {
+        var errorCallback = function () {
+          console.warn('摄像头的权限没有打开');
+        }
+        permissions.requestPermission(
+          permissions.CAMERA,
+          function (status) {
+            if (!status.hasPermission) errorCallback();
+            console.log('获取权限成功！');
+          },
+          errorCallback);
+      }
+    }
+    },
 
   // onBackKeyDown: function () {
   //   router.go(-1)

@@ -8,6 +8,7 @@ const getters = {
   sessionToken: state => { return state.sessionToken },
   user: state => { return state.user },
   backend_uri: state => { return state.backend_uri },
+  upload_uri: state => { return state.upload_uri },
   allUser: state => { return state.allUser },
   allUserGroup: state => { return state.allUserGroup },
   allUserLocation: state => { return state.allUserLocation },

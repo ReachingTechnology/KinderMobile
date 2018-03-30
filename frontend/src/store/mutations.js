@@ -22,6 +22,9 @@ const mutations = {
     } else {
       state.authenticated = true
     }
+    if (state.user.avatar === undefined){
+      state.user.avatar = {localUri: '', remoteUri: '', createTime: 0}
+    }
   },
   SET_ALL_STATISTIC_DATA (state, data) {
     console.log('begin set all unfinished data')
@@ -73,6 +76,9 @@ const mutations = {
         var item = dayTask[i]
         item.starttime += startofyesterday
         item.endtime += startofyesterday
+        if (item.pictures === undefined) {
+          item.pictures = []
+        }
         //     var taskStartTime = item.starttime - startofyesterday + item.startofday
         //     var taskEndTime = item.endtime - startofyesterday + item.startofday
         //     if (item.realendtime === 0) {
@@ -122,6 +128,9 @@ const mutations = {
       item.comment = data[i].comment
       item.startofday = data[i].startofday
       item.finish_status = data[i].finish_status
+      if (item.pictures === undefined) {
+        item.pictures = []
+      }
       // var taskStartTime = item.starttime + item.startofday
       // var taskEndTime = item.endtime + item.startofday
       // if (item.realendtime === 0) {

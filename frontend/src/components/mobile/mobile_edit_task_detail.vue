@@ -26,16 +26,17 @@
       <mu-menu-item value=0   title="个人原因"/>
       <mu-menu-item value=1   title="工作安排"/>
     </mu-select-field>
-    <br/>
-    <mu-grid-list class="gridlist-inline-demo">
-      <mu-grid-tile v-for="tile, index in task.pictures" :key="index">
-        <img :src="tile.localUri"/>
-        <!--<span slot="title">{{tile.title}}</span>-->
-        <span slot="subTitle">{{tile.createTime}}</span>
-        <mu-icon-button icon="clear" slot="action" @click="onRemovePicture"/>
-      </mu-grid-tile>
-      <mu-icon-button icon="add_box" color="green" size="100" @click="onAddPicture"/>
-    </mu-grid-list>
+    <div v-show="this.user._id === this.task.userid" class="mu-text-field-label">拍照留存</div>
+    <div class="gridlist-container">
+      <mu-grid-list class="gridlist-inline-demo">
+        <mu-grid-tile v-for="tile, index in pictures" :key="index">
+          <img name="pics" :src="getPictureUrl(tile)"/>
+          <span slot="subTitle">{{getTimeDisplay(tile.createTime)}}</span>
+          <mu-icon-button icon="clear" slot="action" @click="onRemovePicture(tile)"/>
+        </mu-grid-tile>
+        <mu-icon-button icon="add_box" color="green" v-show="shouldShowAddBtn" iconClass="add_button" @click="onAddPicture"/>
+      </mu-grid-list>
+    </div>
     <div>
       <mu-raised-button style="display: inline-block" @click="cancelEdit" label="取消" class="raised-button" />
       <mu-raised-button style="display: inline-block" @click="commitEdit" :label="task.finish_status === TASK_STATUS_INPROCESS ? '完成':'提交'" class="raised-button" backgroundColor="green"/>
@@ -61,6 +62,9 @@
   import {TASK_STATUS_INPROCESS, TASK_STATUS_UNFINISHED, TASK_STATUS_FINISHED, TASK_STATUS} from '../../store/common_defs'
   import dateUtil from '../../utils/DateUtil'
   import util from '../../store/utils'
+  import FileUtil from '../../utils/FileUtil'
+  import Moment from 'moment'
+  import ArrayUtil from '../../utils/ArrayUtil'
   export default {
     components: {},
     name: 'duty_edit_panel',
@@ -98,6 +102,7 @@
         taskFinishInfo.starttime = this.task.starttime
         taskFinishInfo.endtime = this.task.endtime
         taskFinishInfo.timeType = this.task.timeType
+        taskFinishInfo.pictures = this.pictures
         console.log(taskFinishInfo)
         this.COMMIT_TASK_EXEC_INFO(taskFinishInfo)
         this.isCommitting = false
@@ -120,38 +125,105 @@
         console.log(error)
         this.commitInfo(0, 0)
       },
+      getTimeDisplay (time) {
+        return Moment(time * 1000).format('YYYY-MM-DD')
+      },
       onAddPicture () {
         this.openActionSheet = true
       },
-      onRemovePicture () {
-
+      onRemovePicture (tile) {
+        ArrayUtil.remove(tile, this.pictures)
+      },
+      getPictureUrl (pic) {
+        if (pic.remoteUri !== '') {
+          return pic.remoteUri
+        } else {
+          return pic.localUri
+        }
+      },
+      generatePciName (task) {
+        var time = dateUtil.getNow()
+        return this.user._id + '_' + task.taskid + '_' + time + '.jpg'
       },
       setOptions (srcType) {
         var options = {
           // Some common settings are 20, 50, and 100
-          quality: 50,
+          quality: 100,
           destinationType: Camera.DestinationType.FILE_URI,
           // In this app, dynamically set the picture source, Camera or photo gallery
           sourceType: srcType,
           encodingType: Camera.EncodingType.JPEG,
           mediaType: Camera.MediaType.PICTURE,
           saveToPhotoAlbum: true,
-          allowEdit: true,
+          allowEdit: false,
           correctOrientation: true  //Corrects Android orientation quirks
         }
         return options;
       },
-      onPicturePicked (imageUri) {
-        var pic = {}
-        pic.localUri = imageUri
-        pic.remoteUri = ''
-        pic.createTime = dateUtil.getNow()
-        this.task.pictures.push(pic)
+      uploadPicture (fileEntry) {
+        var hh = this
+        fileEntry.file(function (file) {
+          var reader = new FileReader();
+          reader.onloadend = function() {
+            // Create a blob based on the FileReader "result", which we asked to be retrieved as an ArrayBuffer
+            var form = new FormData()
+            var blob = new Blob([new Uint8Array(this.result)], { type: "image/png" });
+            console.log('new blob', this.result, '$', blob)
+            form.append("blob", blob, fileEntry.name)
+            var oReq = new XMLHttpRequest();
+            oReq.open("POST", hh.upload_uri, true)
+            oReq.onload = function () {
+              // all done!
+              console.log('upload done:', oReq.response)
+              var result = JSON.parse(oReq.response)
+              if(result.data.status === 0){
+                hh.currentUser.picture.remoteUri = hh.backend_uri + result.data.fileurl
+                console.log('the remote url of uploaded file:', hh.currentUser.picture.remoteUri)
+                var param = {_id: hh.user._id}
+                param.picture = hh.currentUser.picture
+              }
+            };
+            // Pass the blob in to XHR's send method
+            oReq.send(form);
+          };
+          // Read the file as an ArrayBuffer
+          reader.readAsArrayBuffer(file);
+        }, function (err) { console.error('error getting fileentry file!' + err); })
+      },
+      onPictureTaken (imageUri) {
+        var pos0 = imageUri.lastIndexOf('?')
+        var fullFilename = imageUri
+        if (pos0 >= 0) {
+          fullFilename = imageUri.substr(0, imageUri.lastIndexOf('?'))
+        }
+        var pos = fullFilename.lastIndexOf('/')
+        var path = fullFilename.substr(0, pos)
+        var filename = fullFilename.substr(pos + 1);
+        FileUtil.getFileEntry(path, filename, this.onOriginalFilePicked, this.onOriginalFilePickFailed)
+      },
+      onOriginalFilePicked (fileEntry) {
+        var filename = this.generatePciName(this.task)
+        FileUtil.moveFile(fileEntry, cordova.file.externalDataDirectory, filename, this.setPicture)
+      },
+      onOriginalFilePickFailed (error) {
+        console.error(error)
+      },
+      setPicture (fileEntry) {
+        var picture = {}
+        picture.localUri = fileEntry.toInternalURL()
+        picture.remoteUri = ''
+        picture.createTime = dateUtil.getNow()
+        var count = this.task.pictures.length
+//        this.$set(this.task.pictures, count, picture)
+        this.pictures.push(picture)
+//        this.task.pictures = Object.assign({}, this.task.pictures)
+        console.log('get picture object:', picture, this.pictures)
+//        this.uploadPicture(fileEntry)
       },
       onAddFromCamera () {
         var srcType = Camera.PictureSourceType.CAMERA;
         var options = this.setOptions(srcType);
-        var func = this.onPicturePicked
+        var func = this.onPictureTaken
 
         navigator.camera.getPicture(function cameraSuccess(imageUri) {
           func(imageUri);
@@ -164,7 +236,7 @@
       onAddFromAlbum () {
         var srcType = Camera.PictureSourceType.PHOTOLIBRARY;
         var options = this.setOptions(srcType);
-        var func = this.onPicturePicked;
+        var func = this.onPictureTaken;
 
         navigator.camera.getPicture(function cameraSuccess(imageUri) {
           func(imageUri);
@@ -176,10 +248,16 @@
       closeActionSheet () {
         this.openActionSheet = false
       },
-      ...mapActions([COMMIT_TASK_EXEC_INFO, CHANGE_APP_TITLE])
+      ...mapActions([COMMIT_TASK_EXEC_INFO, CHANGE_APP_TITLE]),
+      getTaskPictures () {
+        var task = this.$route.params.task
+        if (task.pictures !== undefined){
+          this.pictures = ArrayUtil.dup(task.pictures)
+        }
+      }
     },
     computed: {
-      ...mapGetters(['allRole', 'user']),
+      ...mapGetters(['allRole', 'user', 'upload_uri']),
       taskDescr () {
         return util.getDutyDescr(this.task.taskid)
       },
@@ -203,13 +281,17 @@
       },
       TASK_STATUS () {
         return TASK_STATUS
-      }
+      },
+      shouldShowAddBtn () {
+        return this.user._id === this.task.userid && this.pictures.length < 6
+      },
     },
     created: function () {
     },
     beforeRouteEnter: function (to, from, next) {
       next(vm => {
         vm.CHANGE_APP_TITLE('员工任务详情')
+        vm.getTaskPictures()
       })
     },
     data () {
@@ -221,7 +303,8 @@
         selectedDay: this.$route.params.date,
         showApprove: this.$route.params.showApprove,
         isCommitting: false,
-        openActionSheet: false
+        openActionSheet: false,
+        pictures: []
       }
     }
   }
@@ -231,9 +314,69 @@
     margin: 12px;
   }
 
+  .gridlist-container{
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
   .gridlist-inline-demo{
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
+    vertical-align: middle;
+  }
+
+  .material-icons.add_button{
+    font-size: 80px;
+    color: #c7cdd2;
+  }
+
+  div.mu-grid-tile img{
+    width: 108px;
+    height: 146px;
+  }
+
+  .gridlist-inline-demo>div{
+    width: 110px;
+    height: 148px;
+  }
+
+  .gridlist-inline-demo>button.mu-icon-button{
+    width: 80px;
+    height: 80px;
+    padding: 0px;
+  }
+
+  .gridlist-inline-demo .mu-grid-tile-titlebar>.mu-grid-tile-action>button.mu-icon-button{
+    width: 32px;
+    height: 32px;
+  }
+
+  .mu-grid-tile-titlebar>.mu-icon-button{
+    width: 32px;
+    height: 32px;
+  }
+
+  .gridlist-inline-demo .mu-grid-tile-title-container{
+    margin-left: 3px;
+  }
+
+  .gridlist-inline-demo .mu-grid-tile{
+    width: 108px;
+    height: 146px;
+  }
+  .gridlist-inline-demo .mu-grid-tile-titlebar{
+    width: 108px;
+    height: 32px;
+  }
+
+  .gridlist-inline-demo>div{
+    width: 108px;
+    height: 146px;
+  }
+
+  .body>div>div.mu-text-field-label{
+    color: rgba(0,0,0,.38);
+    font-size: 16px;
   }
 </style>

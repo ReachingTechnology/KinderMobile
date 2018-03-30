@@ -7,13 +7,25 @@
     "files": {}
   },
   "installed_plugins": {
+    "cordova-plugin-android-permissions": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
     "cordova-plugin-app-preferences": {
       "PACKAGE_NAME": "kinder.reachingtech.com"
     },
     "cordova-plugin-background-mode": {
       "PACKAGE_NAME": "kinder.reachingtech.com"
     },
+    "cordova-plugin-camera": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
     "cordova-plugin-cookieemperor": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
+    "cordova-plugin-file-transfer": {
       "PACKAGE_NAME": "kinder.reachingtech.com"
     },
     "cordova-plugin-geolocation": {
@@ -24,12 +36,6 @@
     },
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "kinder.reachingtech.com"
-    },
-    "cordova-plugin-camera": {
-      "PACKAGE_NAME": "kinder.reachingtech.com"
-    },
-    "cordova-plugin-file": {
-      "PACKAGE_NAME": "kinder.reachingtech.com"
     }
   },
   "dependent_plugins": {
@@ -37,9 +43,6 @@
       "PACKAGE_NAME": "kinder.reachingtech.com"
     },
     "cordova-plugin-device": {
-      "PACKAGE_NAME": "kinder.reachingtech.com"
-    },
-    "cordova-plugin-compat": {
       "PACKAGE_NAME": "kinder.reachingtech.com"
     }
   }

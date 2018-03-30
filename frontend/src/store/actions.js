@@ -3,7 +3,7 @@
  */
 import axios from 'axios'
 import { GET_CURRENT_USER, CHANGE_APP_TITLE, SET_ACTIVE_MENU, GET_ALL_USER_TASK_EXEC_DATA, GET_ALL_USER_TASK_EXEC_DATA_BY_DATERANGE, USER_LOGIN, USER_LOGOUT, USER_CHANGE_PASS,
-  GET_DUTY_BY_USER, UPSERT_USER_ACCOUNT, GET_ALL_USER_ACCOUNT, REMOVE_USERS,
+  GET_DUTY_BY_USER, UPSERT_USER_ACCOUNT, GET_ALL_USER_ACCOUNT, REMOVE_USERS, SET_USER_AVATAR,
   GET_ALL_USER_GROUP, UPSERT_USER_GROUP, REMOVE_USER_GROUPS,
   GET_ALL_ROLE, UPSERT_ROLE, REMOVE_ROLES,
   GET_ALL_PERMISSION_ROLE, UPSERT_PERMISSION_ROLE, GET_ALL_PERMISSION, REMOVE_PERMISSION_ROLES,
@@ -12,7 +12,8 @@ import { GET_CURRENT_USER, CHANGE_APP_TITLE, SET_ACTIVE_MENU, GET_ALL_USER_TASK_
   GET_ALL_USER_LOCATION, UPSERT_USER_LOCATION,
   GET_ALL_INFORM, GET_DUTY_NOTIFICATION_BY_USER, GET_NEW_DUTY_NOTIFICATION_BY_USER, GET_INFORM_BY_USER, GET_NEW_INFORM_BY_USER, UPSERT_INFORM, REMOVE_INFORMS,
   GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT, CHECK_SINGLE_NOTIFICATION, CHECK_SINGLE_INFORM, REMOVE_USER_NOTIFICATIONS, REMOVE_USER_INFORMS,
-  SET_ROOT_VIEW, SET_SHOULD_HAVE_TOPRIGHT_MENU, SET_TOPRIGHT_MENU_SETTING, SET_TASK_QUERY_DATE, SET_COLLAPSE_STATE } from './mutation_types'
+  SET_ROOT_VIEW, SET_SHOULD_HAVE_TOPRIGHT_MENU, SET_TOPRIGHT_MENU_SETTING, SET_TASK_QUERY_DATE, SET_COLLAPSE_STATE,
+  UPLOAD_FILES } from './mutation_types'
 // import dateUtil from '../utils/DateUtil'
 import state from './state'
 import store from './store'
@@ -157,6 +158,12 @@ const actions = {
           })
           .catch(handleError)
       })
+  },
+  [ SET_USER_AVATAR ]: function (store, param) {
+    axios.post('/management/set_user_avatar', param)
+      .then(function (response) {
+      console.log('set user avatar return: ', response)
+    })
   },
   /*
    User Group
@@ -635,6 +642,26 @@ const actions = {
   [ 'EXIT_EDIT_MODE']: function () {
     console.log('exit edit mode')
     state.enterEditMode = false
+  },
+
+  //Utils
+  [ 'UPLOAD_FILES' ]: function (store, param) {
+    console.log('going to upload image', param)
+    // let ax = axios.create()
+    // var files = new FormData()
+    // // for (var i = 0, len = param.length; i < len; i++) {
+    // //   files.append('files[' + i + ']', param[i])
+    // // }
+    // files.append('file', param[0])
+    // ax.post('/util/uploadimage', files, {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data'
+    //   }
+    // })
+    //   .then(function(response){
+    //     console.log('upload file response:::', response)
+    //   })
+
   }
 }
 

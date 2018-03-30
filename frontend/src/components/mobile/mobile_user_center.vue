@@ -1,7 +1,9 @@
 <template>
   <div align="center">
     <br/>
-    <mu-avatar slot="center" :icon="avatarIcon" :size="100" @click="changeAvatar" :src="avatarUrl"></mu-avatar>
+    <mu-avatar slot="center" :size="100" @click="onAddPicture" :src="avatarUrl">
+      <mu-icon :value="avatarIcon" v-show="avatarUrl === ''"/>
+    </mu-avatar>
     <br/>
     <mu-text-field :disabled="true" label="编号" v-model="currentUser._id" labelFloat/>
     <br/>
@@ -18,41 +20,63 @@
       <mu-flat-button slot="actions" @click="closeLogoutDialog" primary label="取消"/>
       <mu-flat-button slot="actions" primary @click="logout" label="确定"/>
     </mu-dialog>
+    <mu-bottom-sheet :open="openActionSheet" @close="closeActionSheet">
+      <mu-list @itemClick="closeActionSheet">
+        <mu-list-item title="拍照" @click="onAddFromCamera"/>
+        <mu-list-item title="从相册里选取" @click="onAddFromAlbum"/>
+        <mu-list-item title="取消"/>
+      </mu-list>
+    </mu-bottom-sheet>
   </div>
 </template>
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import { USER_LOGOUT, GET_CURRENT_USER, CHANGE_APP_TITLE, SET_ROOT_VIEW } from '../../store/mutation_types'
+  import { USER_LOGOUT, GET_CURRENT_USER, CHANGE_APP_TITLE, SET_ROOT_VIEW, SET_USER_AVATAR, UPLOAD_FILES } from '../../store/mutation_types'
   import ObjUtil from '../../utils/ObjUtil'
   import Util from '../../store/utils'
   import FileUtil from '../../utils/FileUtil'
+  import dateUtil from '../../utils/DateUtil'
 
   export default {
     name: 'app',
     components: {
     },
+    created: function () {
+      var filename = this.user._id + '_avatar.jpg'
+      var hh = this
+      FileUtil.checkFileExist(cordova.file.externalDataDirectory, filename, function (exist) {
+        if (exist) {
+          hh.localImgFileExist = 1
+        } else {
+          hh.localImgFileExist = 0
+        }
+      })
+    },
     computed: {
-      ...mapGetters(['user', 'backend_uri']),
+      ...mapGetters(['user', 'backend_uri', 'upload_uri']),
       currentUser () {
         var data = {}
         data = ObjUtil.clone(this.user)
         data.roleName = Util.getRoleNames(this.user.role)
-        data.avatarUrl = this.user.avatarUrl
+        data.avatar = this.user.avatar === undefined ? {} : this.user.avatar
         return data
       }
     },
     data: () => {
       return {
         askLogout: false,
-        avatarUrl: '',
-        avatarIcon: 'people'
+        avatarIcon: 'people',
+        openActionSheet: false,
+        localImgFileExist: -1,
+        avatarUrl: ''
       }
     },
     beforeRouteEnter: function (to, from, next) {
       next(vm => {
         vm.CHANGE_APP_TITLE('个人中心')
         vm.SET_ROOT_VIEW(true)
+        vm.avatarUrl = vm.getCurrentAvatarUrl()
       })
     },
     beforeRouteLeave: function (to, from, next) {
@@ -74,14 +98,19 @@
       handleChgPass () {
         this.$router.push({name: 'changePass'})
       },
-      handleAvatarSuccess (res, file) {
-        this.currentUser.avatarUrl = URL.createObjectURL(file.raw)
-        this.GET_CURRENT_USER()
+      getCurrentAvatarUrl () {
+        console.log('file exist:', this.localImgFileExist)
+        console.log('current avatar', this.currentUser.avatar)
+        if (this.currentUser.avatar.localUri !== '' && this.localImgFileExist !== 0) {
+          return this.currentUser.avatar.localUri
+        } else {
+          return this.currentUser.avatar.remoteUri
+        }
       },
       setOptions (srcType) {
         var options = {
           // Some common settings are 20, 50, and 100
-          quality: 50,
+          quality: 100,
           destinationType: Camera.DestinationType.FILE_URI,
           // In this app, dynamically set the picture source, Camera or photo gallery
           sourceType: srcType,
@@ -93,38 +122,96 @@
         }
         return options;
       },
-      createNewFileEntry (imgUri) {
-        console.log(cordova.file.externalDataDirectory)
-        FileUtil.createNewImgFileEntry(cordova.file.externalDataDirectory, 'useravatar', 'avatar.jpg', imgUri)
+      uploadAvatar (fileEntry) {
+        var hh = this
+        fileEntry.file(function (file) {
+          var reader = new FileReader();
+          reader.onloadend = function() {
+            // Create a blob based on the FileReader "result", which we asked to be retrieved as an ArrayBuffer
+            var form = new FormData()
+            var blob = new Blob([new Uint8Array(this.result)], { type: "image/png" });
+            console.log('new blob', this.result, '$', blob)
+            form.append("blob", blob, fileEntry.name)
+            var oReq = new XMLHttpRequest();
+            oReq.open("POST", hh.upload_uri, true)
+            oReq.onload = function () {
+              // all done!
+              console.log('upload done:', oReq.response)
+              var result = JSON.parse(oReq.response)
+              if(result.data.status === 0){
+                hh.currentUser.avatar.remoteUri = hh.backend_uri + result.data.fileurl
+                console.log('the remote url of uploaded file:', hh.currentUser.avatar.remoteUri)
+                var param = {_id: hh.user._id}
+                param.avatar = hh.currentUser.avatar
+                hh.SET_USER_AVATAR(param)
+                hh.avatarUrl = hh.getCurrentAvatarUrl()
+              }
+            };
+            // Pass the blob in to XHR's send method
+            oReq.send(form);
+          };
+          // Read the file as an ArrayBuffer
+          reader.readAsArrayBuffer(file);
+        }, function (err) { console.error('error getting fileentry file!' + err); })
       },
-      uploadImage (imgUri) {
-//        FileUtil.upload(imgUri)
-        this.avatarUrl = imgUri
-        this.avatarIcon = ''
+      onAddPicture () {
+        this.openActionSheet = true
       },
-      onUploadImgSucceed () {
-        console.log('upload image succeed')
+      onPictureTaken (imageUri) {
+        var pos0 = imageUri.lastIndexOf('?')
+        var fullFilename = imageUri
+        if (pos0 >= 0) {
+          fullFilename = imageUri.substr(0, imageUri.lastIndexOf('?'))
+        }
+        var pos = fullFilename.lastIndexOf('/')
+        var path = fullFilename.substr(0, pos)
+        var filename = fullFilename.substr(pos + 1);
+        FileUtil.getFileEntry(path, filename, this.onOriginalFilePicked, this.onOriginalFilePickFailed)
       },
-      onUploadImgFail () {
-        console.log('upload image failed')
+      onOriginalFilePicked (fileEntry) {
+        var filename = this.user._id + '_avatar.jpg'
+        FileUtil.moveFile(fileEntry, cordova.file.externalDataDirectory, filename, this.setAvatar)
       },
-      changeAvatar () {
+      onOriginalFilePickFailed (error) {
+        console.error(error)
+      },
+      setAvatar (fileEntry) {
+        var avatar = {}
+        avatar.localUri = fileEntry.toInternalURL()
+        avatar.remoteUri = ''
+        avatar.createTime = dateUtil.getNow()
+        this.currentUser.avatar = avatar
+        console.log('get avatar object:', this.currentUser.avatar)
+        this.avatarUrl = ''
+        this.uploadAvatar(fileEntry)
+      },
+      onAddFromCamera () {
         var srcType = Camera.PictureSourceType.CAMERA;
         var options = this.setOptions(srcType);
-        var func = this.uploadImage;
-
-        options.targetHeight = 100;
-        options.targetWidth = 100;
+        var func = this.onPictureTaken
 
         navigator.camera.getPicture(function cameraSuccess(imageUri) {
-
-          console.log('take picture successfully!!')
           func(imageUri);
 
         }, function cameraError(error) {
           console.debug("Unable to obtain picture: " + error, "app");
 
         }, options);
+      },
+      onAddFromAlbum () {
+        var srcType = Camera.PictureSourceType.PHOTOLIBRARY;
+        var options = this.setOptions(srcType);
+        var func = this.onPictureTaken;
+
+        navigator.camera.getPicture(function cameraSuccess(imageUri) {
+          func(imageUri);
+        }, function cameraError(error) {
+          console.debug("Unable to obtain picture: " + error, "app");
+
+        }, options);
+      },
+      closeActionSheet () {
+        this.openActionSheet = false
       },
 //      beforeAvatarUpload (file) {
 //        const isJPG = file.type === 'image/jpeg'
@@ -138,7 +225,7 @@
 //        }
 //        return isJPG && isLt2M
 //      },
-      ...mapActions([GET_CURRENT_USER, CHANGE_APP_TITLE, USER_LOGOUT, SET_ROOT_VIEW])
+      ...mapActions([GET_CURRENT_USER, CHANGE_APP_TITLE, USER_LOGOUT, SET_ROOT_VIEW, SET_USER_AVATAR, UPLOAD_FILES])
     }
   }
 </script>

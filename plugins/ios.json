@@ -31,7 +31,13 @@
       "PHOTOLIBRARY_USAGE_DESCRIPTION": " ",
       "PACKAGE_NAME": "kinder.reachingtech.com"
     },
+    "cordova-plugin-android-permissions": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
     "cordova-plugin-file": {
+      "PACKAGE_NAME": "kinder.reachingtech.com"
+    },
+    "cordova-plugin-file-transfer": {
       "PACKAGE_NAME": "kinder.reachingtech.com"
     }
   },

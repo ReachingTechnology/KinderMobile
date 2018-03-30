@@ -25,5 +25,15 @@ _ArrayUtil.prototype.remove = function (obj, arr) {
     arr.splice(index, 1)
   }
 }
+_ArrayUtil.prototype.dup = function (array) {
+  if (array === undefined) {
+    return []
+  }
+  var result = []
+  for (var i=0, len=array.length; i<len; i++){
+    result.push(array[i])
+  }
+  return result
+}
 var ArrayUtil = new _ArrayUtil()
 export default ArrayUtil
