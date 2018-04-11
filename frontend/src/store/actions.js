@@ -628,7 +628,7 @@ const actions = {
       '_id': '',
       'name': '',
       'descr': '',
-      'notifyType': '',
+      'notifyType': 'message_queue',
       'notifyPriority': '',
       'sendTime': dateUtil.getNow(),
       'informUserList': [],

@@ -6,11 +6,12 @@
     <mu-text-field label="通知内容" v-model="current_inform.descr">
     </mu-text-field>
     <mu-list>
-      <mu-list-item  title="通知发送人" @click="selectInformer">
+      <mu-list-item  title="通知发送人" @click="selectInformer" :describeText="senderName">
         <mu-icon value="chevron_right" slot="right"/>
       </mu-list-item>
       <mu-divider shallowInset/>
-      <mu-list-item  title="被通知人" @click="selectInformee">
+      <br/>
+      <mu-list-item  title="被通知人" @click="selectInformee" :describeText="'共 ' + current_inform.informUserList.length + ' 人'">
         <mu-icon value="chevron_right" slot="right"/>
       </mu-list-item>
       <mu-divider shallowInset/>
@@ -25,7 +26,7 @@
       <mu-menu-item value="low"   :title="NOTIFY_PRIORITY['low']"/>
     </mu-select-field>
     <br/>
-    <mu-select-field v-model="current_inform.notifyType" label="通知方式" @change="handleTaskStatusChange">
+    <mu-select-field v-model="current_inform.notifyType" label="通知方式" @change="handleTaskStatusChange" v-show="false">
       <mu-menu-item value="message_queue"   :title="NOTIFY_TYPE['message_queue']"/>
       <mu-menu-item value="system_alarm"   :title="NOTIFY_TYPE['system_alarm']"/>
       <mu-menu-item value="short_message"   :title="NOTIFY_TYPE['short_message']"/>

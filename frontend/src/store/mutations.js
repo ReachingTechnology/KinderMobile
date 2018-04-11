@@ -64,6 +64,10 @@ const mutations = {
       state.userDayTask.push(item)
     }
   },
+
+  /*
+   * 用户今天的任务的执行情况
+   */
   SET_USER_DUTY_EXEC_DATA (state, data) {
     var currentTime = dateUtil.getNow()
     state.userDayTask = data
@@ -115,9 +119,17 @@ const mutations = {
     }
     console.log(state.userDayTask)
   },
+
+  /*
+   * 一个用户的所有任务在一个时间段的执行情况
+   */
   SET_USER_TASK_EXEC_DATA_BY_DATERANGE (state, data) {
     state.userDaterangeTask = data
   },
+
+  /*
+   * 一个用户的一个任务在一个时间段的执行情况
+   */
   SET_ONE_TASK_EXEC_DATA_BY_DATERANGE (state, data) {
     console.log(data)
     state.taskExecDaterangeData = data
@@ -127,6 +139,8 @@ const mutations = {
       item.realendtime = data[i].realendtime
       item.comment = data[i].comment
       item.startofday = data[i].startofday
+      item.starttime += item.startofday
+      item.endtime += item.startofday
       item.finish_status = data[i].finish_status
       if (item.pictures === undefined) {
         item.pictures = []
