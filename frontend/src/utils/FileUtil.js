@@ -30,6 +30,14 @@ _FileUtil.prototype.getFileEntry = function (path, fileName, succCallback, failC
   }, this.onErrorResolveUrl)
 }
 
+_FileUtil.prototype.getCdvFileEntry = function (fileName, succCallback, failCallback) {
+  console.log('get cdv file entry', fileName)
+  window.resolveLocalFileSystemURL(fileName, function success(fileEntry) {
+    console.log('got file', fileEntry)
+    succCallback(fileEntry)
+  }, failCallback)
+}
+
 _FileUtil.prototype.checkFileExist = function (path, filename, callback) {
   window.resolveLocalFileSystemURL(path, function success(dirEntry) {
     // JPEG file
@@ -41,9 +49,11 @@ _FileUtil.prototype.checkFileExist = function (path, filename, callback) {
 
 }
 
-_FileUtil.prototype.moveFile = function (fileEntry, newDir, newName, callback ) {
+_FileUtil.prototype.moveFile = function (fileEntry, newDir, newName, params, callback ) {
   window.resolveLocalFileSystemURL(newDir, function success(dirEntry) {
-    fileEntry.moveTo(dirEntry, newName, callback, function(err){
+    fileEntry.moveTo(dirEntry, newName, function (fileEntry) {
+      callback(fileEntry, params)
+    }, function(err){
       console.log('move file failed:', fileEntry.name, newDir, newName, err)
     })
     }, this.onErrorResolveUrl)

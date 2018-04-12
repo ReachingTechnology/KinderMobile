@@ -34,7 +34,10 @@
           <span slot="subTitle">{{getTimeDisplay(tile.createTime)}}</span>
           <mu-icon-button icon="clear" slot="action" @click="onRemovePicture(tile)"/>
         </mu-grid-tile>
-        <mu-icon-button icon="add_box" color="green" v-show="shouldShowAddBtn" iconClass="add_button" @click="onAddPicture"/>
+        <div>
+          <mu-icon-button icon="add_box" v-show="shouldShowPhotoBtn" iconClass="enabled_photo_button" @click="onAddPicture"/>
+          <mu-icon-button icon="cloud_upload" v-show="shouldShowPhotoBtn" :iconClass="shouldEnableUploadBtn? 'enabled_photo_button' : 'disabled_photo_button'" @click="onUploadPictures"/>
+        </div>
       </mu-grid-list>
     </div>
     <div>
@@ -65,6 +68,7 @@
   import FileUtil from '../../utils/FileUtil'
   import Moment from 'moment'
   import ArrayUtil from '../../utils/ArrayUtil'
+  import {MessageBox} from 'mint-ui'
   export default {
     components: {},
     name: 'duty_edit_panel',
@@ -75,11 +79,17 @@
       handleTaskStatusChange (value) {
       },
       commitEdit () {
-        this.isCommitting = true
-        this.getLocation()
+        var hh = this
+        MessageBox.confirm('确定提交?').then(function (action) {
+          hh.isCommitting = true
+          hh.getLocation()
+        })
       },
       cancelEdit () {
-        this.$router.go(-1)
+        var hh = this
+        MessageBox.confirm('确定放弃?').then(function (action) {
+          hh.$router.go(-1)
+        })
       },
       // Baidu location functionalities
       getLocation () {
@@ -126,13 +136,69 @@
         this.commitInfo(0, 0)
       },
       getTimeDisplay (time) {
-        return Moment(time * 1000).format('YYYY-MM-DD')
+        return Moment(time).format('YYYY-MM-DD')
+      },
+      onUploadPictures () {
+        var hh = this
+        MessageBox.confirm('确定上传?').then(function (action) {
+          hh.isCommitting = true
+          for (var i=0, len=hh.pictures.length; i<len; i++) {
+            if (hh.pictures[i].remoteUri === '') {
+              FileUtil.getCdvFileEntry(hh.pictures[i].localUri, hh.uploadOnePicture, hh.onOriginalFilePickFailed)
+            }
+          }
+          hh.isCommitting = false
+        })
+      },
+      uploadOnePicture (fileEntry) {
+        console.log('Going to upload a picture: ', fileEntry)
+        var hh = this
+        fileEntry.file(function (file) {
+          var reader = new FileReader();
+          reader.onloadend = function() {
+            // Create a blob based on the FileReader "result", which we asked to be retrieved as an ArrayBuffer
+            var form = new FormData()
+            var blob = new Blob([new Uint8Array(this.result)], { type: "image/png" });
+            console.log('new blob', this.result, '$', blob)
+            form.append("blob", blob, fileEntry.name)
+            var oReq = new XMLHttpRequest();
+            oReq.open("POST", hh.upload_uri, true)
+            var gg = hh
+            oReq.onload = function () {
+              // all done!
+              console.log('upload done:', oReq.response)
+              var result = JSON.parse(oReq.response)
+              if(result.data.status === 0){
+                gg.currentUser.picture.remoteUri = gg.backend_uri + result.data.fileurl
+                console.log('the remote url of uploaded file:', gg.currentUser.picture.remoteUri)
+                var param = {_id: gg.user._id}
+                param.picture = gg.currentUser.picture
+              }
+            };
+            // Pass the blob in to XHR's send method
+            oReq.send(form);
+          };
+          // Read the file as an ArrayBuffer
+          reader.readAsArrayBuffer(file);
+        }, function (err) { console.error('error getting fileentry file!' + err); })
       },
       onAddPicture () {
+        if (this.pictures.length >= 6) {
+          MessageBox.alert('最多只能添加6张照片')
+          return
+        }
         this.openActionSheet = true
       },
       onRemovePicture (tile) {
         ArrayUtil.remove(tile, this.pictures)
+      },
+      isExist (modifyTime, originName){
+        for(var i=0, len=this.pictures.length; i < len; i++){
+          if(this.pictures[i].originFileName === originName){
+            return true
+          }
+        }
+        return false
       },
       getPictureUrl (pic) {
         if (pic.remoteUri !== '') {
@@ -141,9 +207,8 @@
           return pic.localUri
         }
       },
-      generatePciName (task) {
-        var time = dateUtil.getNow()
-        return this.user._id + '_' + task.taskid + '_' + time + '.jpg'
+      generatePicName (milliSecond, task) {
+        return this.user._id + '_' + task.taskid + '_' + milliSecond + '.jpg'
       },
       setOptions (srcType) {
         var options = {
@@ -160,36 +225,6 @@
         }
         return options;
       },
-      uploadPicture (fileEntry) {
-        var hh = this
-        fileEntry.file(function (file) {
-          var reader = new FileReader();
-          reader.onloadend = function() {
-            // Create a blob based on the FileReader "result", which we asked to be retrieved as an ArrayBuffer
-            var form = new FormData()
-            var blob = new Blob([new Uint8Array(this.result)], { type: "image/png" });
-            console.log('new blob', this.result, '$', blob)
-            form.append("blob", blob, fileEntry.name)
-            var oReq = new XMLHttpRequest();
-            oReq.open("POST", hh.upload_uri, true)
-            oReq.onload = function () {
-              // all done!
-              console.log('upload done:', oReq.response)
-              var result = JSON.parse(oReq.response)
-              if(result.data.status === 0){
-                hh.currentUser.picture.remoteUri = hh.backend_uri + result.data.fileurl
-                console.log('the remote url of uploaded file:', hh.currentUser.picture.remoteUri)
-                var param = {_id: hh.user._id}
-                param.picture = hh.currentUser.picture
-              }
-            };
-            // Pass the blob in to XHR's send method
-            oReq.send(form);
-          };
-          // Read the file as an ArrayBuffer
-          reader.readAsArrayBuffer(file);
-        }, function (err) { console.error('error getting fileentry file!' + err); })
-      },
       onPictureTaken (imageUri) {
         var pos0 = imageUri.lastIndexOf('?')
         var fullFilename = imageUri
@@ -202,23 +237,32 @@
         FileUtil.getFileEntry(path, filename, this.onOriginalFilePicked, this.onOriginalFilePickFailed)
       },
       onOriginalFilePicked (fileEntry) {
-        var filename = this.generatePciName(this.task)
-        FileUtil.moveFile(fileEntry, cordova.file.externalDataDirectory, filename, this.setPicture)
+        var hh = this
+        fileEntry.getMetadata(function(md){
+          var modifyDate = md.modificationTime.getTime()
+          var filename = hh.generatePicName(modifyDate, hh.task)
+          if(hh.isExist(modifyDate, fileEntry.name)) {
+            MessageBox.alert('添加的照片已存在')
+            return
+          }
+          var params = {modifyTime: modifyDate, originFilename: fileEntry.name}
+          console.log('before upload file:', params, ', filename:', filename)
+
+          FileUtil.moveFile(fileEntry, cordova.file.externalDataDirectory, filename, params, hh.setPicture)
+        }, this.onOriginalFilePickFailed)
+
       },
       onOriginalFilePickFailed (error) {
         console.error(error)
       },
-      setPicture (fileEntry) {
+      setPicture (fileEntry, params) {
         var picture = {}
         picture.localUri = fileEntry.toInternalURL()
         picture.remoteUri = ''
-        picture.createTime = dateUtil.getNow()
-        var count = this.task.pictures.length
-//        this.$set(this.task.pictures, count, picture)
+        picture.createTime = params.modifyTime
+        picture.originFileName = params.originFilename
         this.pictures.push(picture)
-//        this.task.pictures = Object.assign({}, this.task.pictures)
         console.log('get picture object:', picture, this.pictures)
-//        this.uploadPicture(fileEntry)
       },
       onAddFromCamera () {
         var srcType = Camera.PictureSourceType.CAMERA;
@@ -282,8 +326,20 @@
       TASK_STATUS () {
         return TASK_STATUS
       },
-      shouldShowAddBtn () {
-        return this.user._id === this.task.userid && this.pictures.length < 6
+      shouldShowPhotoBtn () {
+        return this.user._id === this.task.userid
+      },
+      shouldEnableUploadBtn () {
+        var len = this.pictures.length
+        if(len === 0){
+          return false
+        }
+        for(var i=0; i<len; i++){
+          if(this.pictures[i].remoteUri === ''){
+            return true
+          }
+        }
+        return false
       },
     },
     created: function () {
@@ -326,8 +382,13 @@
     vertical-align: middle;
   }
 
-  .material-icons.add_button{
-    font-size: 80px;
+  .material-icons.enabled_photo_button{
+    font-size: 60px;
+    color: lightblue;
+  }
+
+  .material-icons.disabled_photo_button{
+    font-size: 60px;
     color: #c7cdd2;
   }
 
@@ -371,7 +432,7 @@
   }
 
   .gridlist-inline-demo>div{
-    width: 108px;
+    width: 70px;
     height: 146px;
   }
 

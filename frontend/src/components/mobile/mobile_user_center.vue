@@ -51,6 +51,7 @@
         } else {
           hh.localImgFileExist = 0
         }
+        hh.avatarUrl = hh.getCurrentAvatarUrl()
       })
     },
     computed: {
