@@ -30,11 +30,11 @@ _FileUtil.prototype.getFileEntry = function (path, fileName, succCallback, failC
   }, this.onErrorResolveUrl)
 }
 
-_FileUtil.prototype.getCdvFileEntry = function (fileName, succCallback, failCallback) {
+_FileUtil.prototype.getCdvFileEntry = function (fileName, params, succCallback, failCallback) {
   console.log('get cdv file entry', fileName)
   window.resolveLocalFileSystemURL(fileName, function success(fileEntry) {
     console.log('got file', fileEntry)
-    succCallback(fileEntry)
+    succCallback(fileEntry, params)
   }, failCallback)
 }
 

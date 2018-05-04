@@ -6,11 +6,11 @@
     <mu-text-field label="通知内容" v-model="current_inform.descr">
     </mu-text-field>
     <mu-list>
-      <mu-list-item  title="通知发送人" @click="selectInformer" :describeText="senderName">
-        <mu-icon value="chevron_right" slot="right"/>
-      </mu-list-item>
-      <mu-divider shallowInset/>
-      <br/>
+      <!--<mu-list-item  title="通知发送人" @click="selectInformer" :describeText="senderName">-->
+        <!--<mu-icon value="chevron_right" slot="right"/>-->
+      <!--</mu-list-item>-->
+      <!--<mu-divider shallowInset/>-->
+      <!--<br/>-->
       <mu-list-item  title="被通知人" @click="selectInformee" :describeText="'共 ' + current_inform.informUserList.length + ' 人'">
         <mu-icon value="chevron_right" slot="right"/>
       </mu-list-item>

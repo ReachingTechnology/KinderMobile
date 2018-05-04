@@ -131,7 +131,7 @@ _Util.prototype.hasPermission = function (permission) {
         if (permissionRole) {
           for (var k = 0; k < permissionRole.permissions.length; k++) {
             if (permissionRole.permissions[k] === permissionid) {
-              // console.log('return true:' + permission)
+              console.log('has permission:',permission,permissionRole)
               return true
             }
           }
@@ -139,7 +139,7 @@ _Util.prototype.hasPermission = function (permission) {
       }
     }
   }
-  // console.log('return false:' + permission)
+  console.log('has no permission:' + permission)
   return false
 }
 _Util.prototype.hasCategoryPermission = function (categoryname) {

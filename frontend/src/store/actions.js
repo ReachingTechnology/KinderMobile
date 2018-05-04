@@ -632,7 +632,7 @@ const actions = {
       'notifyPriority': '',
       'sendTime': dateUtil.getNow(),
       'informUserList': [],
-      'sender': ''
+      'sender': state.user._id
     }
     router.push({name: 'editInformDetail', params:{inform: emptyInform}})
   },

@@ -32,17 +32,19 @@
         <mu-grid-tile v-for="tile, index in pictures" :key="index">
           <img name="pics" :src="getPictureUrl(tile)"/>
           <span slot="subTitle">{{getTimeDisplay(tile.createTime)}}</span>
-          <mu-icon-button icon="clear" slot="action" @click="onRemovePicture(tile)"/>
+          <mu-icon-button v-show="shouldShowPhotoBtn" icon="clear" slot="action" @click="onRemovePicture(tile)"/>
         </mu-grid-tile>
-        <div>
-          <mu-icon-button icon="add_box" v-show="shouldShowPhotoBtn" iconClass="enabled_photo_button" @click="onAddPicture"/>
-          <mu-icon-button icon="cloud_upload" v-show="shouldShowPhotoBtn" :iconClass="shouldEnableUploadBtn? 'enabled_photo_button' : 'disabled_photo_button'" @click="onUploadPictures"/>
-        </div>
       </mu-grid-list>
     </div>
+    <div style="height: 20px"/>
+    <div v-show="shouldShowPhotoBtn">
+      <mu-raised-button style="display: inline-block; margin: 12px" @click="onAddPicture" label="添加照片" class="raised-button" backgroundColor="lightblue"/>
+      <mu-raised-button style="display: inline-block; margin: 12px" @click="onUploadPictures" label="上传照片" :disabled="!shouldEnableUploadBtn" class="raised-button" :backgroundColor="shouldEnableUploadBtn?'lightblue':'grey'"/>
+    </div>
+    <br/>
     <div>
-      <mu-raised-button style="display: inline-block" @click="cancelEdit" label="取消" class="raised-button" />
-      <mu-raised-button style="display: inline-block" @click="commitEdit" :label="task.finish_status === TASK_STATUS_INPROCESS ? '完成':'提交'" class="raised-button" backgroundColor="green"/>
+      <mu-raised-button style="display: inline-block; margin: 12px" @click="cancelEdit" label="取消" class="raised-button" />
+      <mu-raised-button style="display: inline-block; margin: 12px" @click="commitEdit" :label="task.finish_status === TASK_STATUS_INPROCESS ? '完成':'提交'" class="raised-button" backgroundColor="green"/>
     </div>
     <div v-show="isCommitting">
       <div class="v-modal" tabindex="0" style="z-index: 2019; width: 100%; height: 100%"></div>
@@ -140,19 +142,31 @@
       },
       onUploadPictures () {
         var hh = this
+        var needUpload = false
+        for (var i=0, len=hh.pictures.length; i<len; i++) {
+          if (hh.pictures[i].remoteUri === '') {
+            needUpload = true
+          }
+        }
+        if (this.pictures.length === 0 || !needUpload){
+          MessageBox.alert('无可上传文件')
+          return
+        }
         MessageBox.confirm('确定上传?').then(function (action) {
           hh.isCommitting = true
           for (var i=0, len=hh.pictures.length; i<len; i++) {
             if (hh.pictures[i].remoteUri === '') {
-              FileUtil.getCdvFileEntry(hh.pictures[i].localUri, hh.uploadOnePicture, hh.onOriginalFilePickFailed)
+              var params = {index: i}
+              FileUtil.getCdvFileEntry(hh.pictures[i].localUri, params, hh.uploadOnePicture, hh.onOriginalFilePickFailed)
             }
           }
           hh.isCommitting = false
         })
       },
-      uploadOnePicture (fileEntry) {
+      uploadOnePicture (fileEntry, argument) {
         console.log('Going to upload a picture: ', fileEntry)
         var hh = this
+        var ii = argument.index
         fileEntry.file(function (file) {
           var reader = new FileReader();
           reader.onloadend = function() {
@@ -164,15 +178,14 @@
             var oReq = new XMLHttpRequest();
             oReq.open("POST", hh.upload_uri, true)
             var gg = hh
+            var index = ii
             oReq.onload = function () {
               // all done!
               console.log('upload done:', oReq.response)
               var result = JSON.parse(oReq.response)
               if(result.data.status === 0){
-                gg.currentUser.picture.remoteUri = gg.backend_uri + result.data.fileurl
-                console.log('the remote url of uploaded file:', gg.currentUser.picture.remoteUri)
-                var param = {_id: gg.user._id}
-                param.picture = gg.currentUser.picture
+                gg.pictures[index].remoteUri = gg.backend_uri + '/' + result.data.fileurl
+                console.log('the remote url of uploaded file:', gg.pictures[index].remoteUri)
               }
             };
             // Pass the blob in to XHR's send method
@@ -202,8 +215,10 @@
       },
       getPictureUrl (pic) {
         if (pic.remoteUri !== '') {
+          console.log('return remoteURI:', pic.remoteUri)
           return pic.remoteUri
         } else {
+          console.log('return localURI:', pic.localUri)
           return pic.localUri
         }
       },
@@ -301,7 +316,7 @@
       }
     },
     computed: {
-      ...mapGetters(['allRole', 'user', 'upload_uri']),
+      ...mapGetters(['allRole', 'user', 'upload_uri', 'backend_uri']),
       taskDescr () {
         return util.getDutyDescr(this.task.taskid)
       },

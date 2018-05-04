@@ -11,7 +11,7 @@
         <mu-badge v-show="newInformCount > 0" :content="newInformCount" slot="after" secondary circle/>
       </mu-list-item>
       <mu-divider shallowInset/>
-      <mu-list-item  title="发送工作通知" :describeText="'已有' + allInform.length + '条通知'">
+      <mu-list-item v-show="this.hasCreatePermission()" title="发送工作通知" :describeText="'已有' + allInform.length + '条通知'">
         <mu-icon value="chevron_right" slot="right"/>
       </mu-list-item>
       <mu-divider shallowInset/>
@@ -33,6 +33,7 @@
 //  import dateUtil from '../../utils/DateUtil'
   import Moment from 'moment'
   import {NOTIFY_PRIORITY} from '../../store/common_defs'
+  import Util from '../../store/utils'
 
   export default {
     name: 'mobile_user_message_list',
@@ -57,6 +58,9 @@
         this.GET_NEW_INFORM_COUNT()
         this.GET_NEW_DUTY_NOTIFICATION_COUNT()
         this.GET_ALL_INFORM()
+      },
+      hasCreatePermission () {
+        return Util.hasPermission('PERMISSION_INFORM_UPSERT')
       },
       ...mapActions([CHANGE_APP_TITLE, GET_ALL_INFORM, GET_NEW_DUTY_NOTIFICATION_COUNT, GET_NEW_INFORM_COUNT, SET_ROOT_VIEW])
     },

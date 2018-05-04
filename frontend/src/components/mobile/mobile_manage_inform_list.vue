@@ -38,6 +38,7 @@
   //  import dateUtil from '../../utils/DateUtil'
   import Moment from 'moment'
   import {NOTIFY_PRIORITY} from '../../store/common_defs'
+  import Util from '../../store/utils'
 
   export default {
     name: 'mobile_user_inform_management',
@@ -83,6 +84,12 @@
         this.selectedInforms = []
         this.EXIT_EDIT_MODE()
       },
+      hasCreatePermission () {
+        return Util.hasPermission('PERMISSION_INFORM_UPSERT')
+      },
+      hasRemovePermission () {
+        return Util.hasPermission('PERMISSION_INFORM_REMOVE')
+      },
       ...mapActions([CHANGE_APP_TITLE, GET_ALL_INFORM, SET_SHOULD_HAVE_TOPRIGHT_MENU, SET_TOPRIGHT_MENU_SETTING, REMOVE_INFORMS, EXIT_EDIT_MODE])
     },
     watch: {
@@ -111,9 +118,11 @@
         vm.CHANGE_APP_TITLE('管理工作通知')
         vm.SET_SHOULD_HAVE_TOPRIGHT_MENU(true)
         var menuSetting = []
-        menuSetting.push({title: '创建新通知', action: 'CREATE_NEW_INFORM'})
-        menuSetting.push({title: '删除通知', action: 'ENTER_EDIT_MODE'})
-        vm.SET_TOPRIGHT_MENU_SETTING(menuSetting)
+        if(vm.hasCreatePermission()) {
+          menuSetting.push({title: '创建新通知', action: 'CREATE_NEW_INFORM'})
+          menuSetting.push({title: '删除通知', action: 'ENTER_EDIT_MODE'})
+          vm.SET_TOPRIGHT_MENU_SETTING(menuSetting)
+        }
         vm.getData()
       })
     },
