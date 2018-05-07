@@ -140,7 +140,7 @@
               console.log('upload done:', oReq.response)
               var result = JSON.parse(oReq.response)
               if(result.data.status === 0){
-                hh.currentUser.avatar.remoteUri = hh.backend_uri + result.data.fileurl
+                hh.currentUser.avatar.remoteUri = hh.backend_uri + '/' + result.data.fileurl
                 console.log('the remote url of uploaded file:', hh.currentUser.avatar.remoteUri)
                 var param = {_id: hh.user._id}
                 param.avatar = hh.currentUser.avatar
@@ -171,12 +171,12 @@
       },
       onOriginalFilePicked (fileEntry) {
         var filename = this.user._id + '_avatar.jpg'
-        FileUtil.moveFile(fileEntry, cordova.file.externalDataDirectory, filename, this.setAvatar)
+        FileUtil.moveFile(fileEntry, cordova.file.externalDataDirectory, filename, {}, this.setAvatar)
       },
       onOriginalFilePickFailed (error) {
         console.error(error)
       },
-      setAvatar (fileEntry) {
+      setAvatar (fileEntry, params) {
         var avatar = {}
         avatar.localUri = fileEntry.toInternalURL()
         avatar.remoteUri = ''

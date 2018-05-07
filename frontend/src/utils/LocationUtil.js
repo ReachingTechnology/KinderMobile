@@ -5,6 +5,7 @@ import store from '../store/store'
 var locationUtil = {
   getLocationPeriodically: function (timeInterval) {
     setTimeout(function () {
+      console.log('get location periodically!')
       if (store.state.user._id !== '') {
         navigator.geolocation.getCurrentPosition(locationUtil.translateLoc, locationUtil.onGetLocationError, {
           timeout: 10000
@@ -13,6 +14,15 @@ var locationUtil = {
       }
       locationUtil.getLocationPeriodically(timeInterval)
     }, timeInterval)
+  },
+  getLocationImmediately: function () {
+    console.log('get location immediately!')
+    if (store.state.user._id !== '') {
+      navigator.geolocation.getCurrentPosition(locationUtil.translateLoc, locationUtil.onGetLocationError, {
+        timeout: 10000
+        // enableHighAccuracy: true
+      })
+    }
   },
   translateLoc: function (position) {
     var currentLat = position.coords.latitude

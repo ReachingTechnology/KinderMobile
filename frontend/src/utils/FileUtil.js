@@ -31,7 +31,6 @@ _FileUtil.prototype.getFileEntry = function (path, fileName, succCallback, failC
 }
 
 _FileUtil.prototype.getCdvFileEntry = function (fileName, params, succCallback, failCallback) {
-  console.log('get cdv file entry', fileName)
   window.resolveLocalFileSystemURL(fileName, function success(fileEntry) {
     console.log('got file', fileEntry)
     succCallback(fileEntry, params)
@@ -42,7 +41,6 @@ _FileUtil.prototype.checkFileExist = function (path, filename, callback) {
   window.resolveLocalFileSystemURL(path, function success(dirEntry) {
     // JPEG file
     dirEntry.getFile(filename, { create: false, exclusive: false }, function (fileEntry) {
-      console.log("got file: ", fileEntry)
       callback(true)
     }, function (err) {callback(false)})
   }, this.onErrorResolveUrl)

@@ -1,6 +1,8 @@
 /**
  * Created by HOZ on 15/12/2017.
  */
+import LocationUtil from './LocationUtil'
+
 function _BackgroundModeUtil () {
 }
 _BackgroundModeUtil.prototype.plugin = undefined
@@ -20,10 +22,12 @@ _BackgroundModeUtil.prototype.initialize = function () {
   // Update badge once mode gets activated
 _BackgroundModeUtil.prototype.onModeActivated = function () {
   backgroundModeUtil.plugin.disableWebViewOptimizations()
+  LocationUtil.getLocationImmediately()
 }
 
 // Reset badge once deactivated
 _BackgroundModeUtil.prototype.onModeDeactivated = function () {
+  LocationUtil.getLocationImmediately()
 }
 
 // Update CSS classes

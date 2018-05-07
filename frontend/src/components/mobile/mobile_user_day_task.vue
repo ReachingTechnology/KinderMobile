@@ -111,7 +111,6 @@
           item.icon = 'assignment'
           item.iconBgColor = 'blue'
         }
-        console.log('set icon', item)
       },
       routineListCollapseChanged (open) {
         var param = {}
