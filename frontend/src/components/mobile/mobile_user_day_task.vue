@@ -142,7 +142,11 @@
           var timeType = keys[m]
           for (var i = 0, len = data[timeType].length; i < len; i++) {
             var item = data[timeType][i]
-            item.executetime = Moment(item.starttime * 1000).format('H:mm') + ' 到 ' + Moment(item.endtime * 1000).format('H:mm')
+            if(timeType == DUTY_TIME_TYPE_SPECIFIC) {
+              item.executetime = Moment(item.starttime * 1000).format('M月D日') + ' 到 ' + Moment(item.endtime * 1000).format('M月D日')
+            }else {
+              item.executetime = Moment(item.starttime * 1000).format('H:mm') + ' 到 ' + Moment(item.endtime * 1000).format('H:mm')
+            }
             item.realendtimeDisplay = item.realendtime === 0 ? '' : Moment(item.realendtime * 1000).format('M月D日 H:mm')
             item.finish_status_display = TASK_STATUS.get(item.finish_status)
             this.setIcon(item)

@@ -33,7 +33,7 @@ function handleError (error) {
   if (error.response.status === 401) {
     var empty_user =  {'_id': '', 'name': ''}
     store.commit('SET_USER', empty_user)
-    store.dispatch('CHANGE_APP_TITLE', '幼儿园安保系统')
+    store.dispatch('CHANGE_APP_TITLE', '岗位职责安全管理平台')
   }
 }
 

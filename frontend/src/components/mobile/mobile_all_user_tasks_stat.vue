@@ -68,7 +68,7 @@
     },
     beforeRouteEnter: function (to, from, next) {
       next(vm => {
-        vm.CHANGE_APP_TITLE('安保统计报表')
+        vm.CHANGE_APP_TITLE('职责统计报表')
         vm.SET_ROOT_VIEW(true)
         vm.getData() })
     },

@@ -30,7 +30,7 @@
       }
     },
     beforeRouteEnter: function (to, from, next) {
-      next(vm => { vm.CHANGE_APP_TITLE('幼儿园安保系统') })
+      next(vm => { vm.CHANGE_APP_TITLE('岗位职责安全管理平台') })
     },
     methods: {
       ...mapActions([USER_LOGIN, CHANGE_APP_TITLE]),

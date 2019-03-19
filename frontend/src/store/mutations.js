@@ -60,6 +60,7 @@ const mutations = {
       var startDate = Moment(item.starttime * 1000).format('H:mm')
       var endDate = Moment(item.endtime * 1000).format('H:mm')
       item.executetime = startDate + ' 至 ' + endDate
+      item.timeType = data[i].timeType
       console.log('insert: ' + item)
       state.userDayTask.push(item)
     }
@@ -78,8 +79,10 @@ const mutations = {
       var dayTask = state.userDayTask[timeType]
       for (var i = 0, len = dayTask.length; i < len; i++) {
         var item = dayTask[i]
-        item.starttime += startofyesterday
-        item.endtime += startofyesterday
+        if(timeType !== 'DUTY_TIME_TYPE_SPECIFIC') {
+          item.starttime += startofyesterday
+          item.endtime += startofyesterday
+        }
         if (item.pictures === undefined) {
           item.pictures = []
         }
@@ -139,8 +142,8 @@ const mutations = {
       item.realendtime = data[i].realendtime
       item.comment = data[i].comment
       item.startofday = data[i].startofday
-      item.starttime += item.startofday
-      item.endtime += item.startofday
+      // item.starttime += item.startofday
+      // item.endtime += item.startofday
       item.finish_status = data[i].finish_status
       if (item.pictures === undefined) {
         item.pictures = []
